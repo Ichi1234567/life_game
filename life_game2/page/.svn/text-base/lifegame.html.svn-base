@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>life game</title>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		<script type="text/javascript">
+			document.write("<sc" + "ript type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js'></scr" + "ipt>");
+		</script>
+		<script type="text/javascript" src="http://jquery.bassistance.de/treeview/jquery.treeview.js"></script> 
+		<!--[if lt IE 9]><script type="text/javascript" src="../src/excanvas.js"></script><![endif]--> 
+		<script type="text/javascript" src="../src/lg.min.js"></script> 
+        <link rel="stylesheet" href="http://jquery.bassistance.de/treeview/jquery.treeview.css" /> 
+        <!--script type='text/javascript' src="http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js"></script--> 
+	</head>
+	<style>
+		#evn {
+			border: 1px solid #4c4c4c;
+        }
+        #pause {
+            display: none;
+        }
+	</style>
+    <body>
+        <!--cell-size:<input id="cellsize" type="text" size="5"/-->
+        S/B/G：<select id='mode'>
+            <option value="twoxtwo"> 125/36/ </option>
+            <option value="conway"> 23/3/ </option>
+            <option value="flakes"> 012345678/3/ </option>
+            <option value="maze"> 12345/3/ </option>
+            <option value="replicator"> 1357/1357/ </option>
+            <option value="logic"> /2/ </option>
+
+            <option value="brainbrain"> /2/1</option>
+            <option value="banners"> 2367/3457/3 </option>
+            <option value="ebbflow"> 012478/36/16 </option>
+            <option value="fireworks"> 2/13/19 </option>
+            <option value="rake"> 3467/2678/4 </option>
+            <option value="spirals"> 2/234/3 </option>
+        </select>
+        <br/>
+
+        <button id="clear">clear</button>
+        <button id="reset">reset</button>
+        <button id="start">start</button>
+        <button id="pause">pause</button>
+        <!--button id="stop">stop</button>
+        <button id="add">add cell</button>
+        <button id="del">del cell</button-->
+        <br/>
+		<canvas id="evn" width="600" height="600"></canvas>
+        <script>
+            var offsetmouse = function(evt) {
+                var result = {};
+                if (evt.offsetX) {
+                    result.x = evt.offsetX;
+                    result.y = evt.offsetY;
+                } else {
+                    var ele = evt.target || evt.srcElement;
+                    var x = 0;
+                    var y = 0;
+                    while (ele.offsetParent) {
+                        x += ele.offsetLeft;
+                        y += ele.offsetTop;
+                        ele = ele.offsetParent;
+                    }
+                    result.x = evt.pageX - x;
+                    result.y = evt.pageY - y;
+                }
+                return result;
+            };
+            window.onload = function() {
+                var lg = LG();
+                lg.reset();
+
+                $('#reset').bind('click', function() {
+                    lg.reset();
+                });
+                $('#start').bind('click', function() {
+                    //lg.start(lg);
+                    var mode = $('#mode option:selected');
+                    var modeVal = mode.val();
+                    lg.start(lg, modeVal);
+                    $('#reset').css('display', 'none');
+                    $('#start').css('display', 'none');
+                    $('#pause').css('display', 'inline');
+                });
+                $('#pause').bind('click', function() {
+                    lg.pause(lg);
+                    $('#pause').css('display', 'none');
+                    $('#reset').css('display', 'inline');
+                    $('#start').css('display', 'inline');
+                });
+                $('#stop').bind('click', function() {
+                });
+                $('#clear').bind('click', function() {
+                    lg.clear();
+                });
+                var ismousedown = false;
+                $('#evn').bind({
+                    'mousedown': function() {
+                        ismousedown = true;
+                    },
+                    'mousemove': function(evt) {
+                        if (ismousedown) {
+                            var mouse = offsetmouse(evt);
+                            lg.setcell(mouse, 'role');
+                        }
+                    },
+                    'mouseup': function() {
+                        ismousedown = false;
+                    },
+                    'click': function(evt) {
+                        var mouse = offsetmouse(evt);
+                        lg.setcell(mouse, 'role');
+                    }
+                });
+            };
+		</script>
+	</body>
+</html>

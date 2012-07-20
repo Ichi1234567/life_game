@@ -1,0 +1,29 @@
+defaultTasks 'min'
+
+task clean << {
+    delete 'lg.min.js'
+}
+
+task jsapi(dependsOn: 'clean') << {
+    ant.concat(destfile: 'lg.js') {
+		fileset(file: 'moverule.js')
+		fileset(file: 'setcell.js')
+		fileset(file: 'celltype.js')
+		fileset(file: 'celltable.js')
+		fileset(file: 'lifegame.js')
+    }
+}
+
+task lint << {
+    exec {
+        executable = 'java'
+        args = ['-jar', '../../build/js.jar', '../../build/jslint-check.js']
+    }
+}
+
+task min(dependsOn: 'jsapi') << {
+    exec {
+        executable = 'java'
+        args = ['-jar', '../../build/compiler-20100917.jar', '--js_output_file', 'lg.min.js', '--js', 'lg.js']
+    }
+}
