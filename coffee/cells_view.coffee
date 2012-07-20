@@ -6,6 +6,7 @@ define([
     "display"
 ], (BASIC, ROLE, FOOD, ENEMY, DISPLAY) ->
     console.log("cells_view")
+    _Math = Math
     cell_model = {
         empty: BASIC,
         role: ROLE,
@@ -43,9 +44,17 @@ define([
                 _base = set_i.rate
             )
             @cells = @set(@cellSet)
-            $("#plant").showD3({})
+            _num = @num
+            _cells = @cells
+            $("#plant").showD3({
+                w: 200,
+                h: 200,
+                num: _Math.ceil(_Math.sqrt(_num)),
+                data: _cells
+            })
             @
-        events: {
+        "events": {
+            "click #reset": "reset"
         }
         render: () ->
             @
@@ -53,11 +62,22 @@ define([
             @
 
 
+        reset: () ->
+            console.log("click")
+            @cells = @set(@cellSet)
+            _num = @num
+            _cells = @cells
+            $("#plant").html("").showD3({
+                w: 200,
+                h: 200,
+                num: _Math.ceil(_Math.sqrt(_num)),
+                data: _cells
+            })
         set: (cellset) ->
             _num = @num
             _Math = Math
             cells = []
-            for i in [0.._num]
+            for i in [0..._num]
                 _rnd = _Math.random()
                 cell_i = null
                 cellset.map((set_i, idx) ->

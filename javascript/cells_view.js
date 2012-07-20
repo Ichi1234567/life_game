@@ -1,8 +1,9 @@
 (function() {
 
   define(["basic_cell", "role_cell", "food_cell", "enemy_cell", "display"], function(BASIC, ROLE, FOOD, ENEMY, DISPLAY) {
-    var SCENE, cell_model;
+    var SCENE, cell_model, _Math;
     console.log("cells_view");
+    _Math = Math;
     cell_model = {
       empty: BASIC,
       role: ROLE,
@@ -11,7 +12,7 @@
     };
     SCENE = Backbone.View.extend({
       initialize: function(params) {
-        var _base;
+        var _base, _cells, _num;
         params = params ? params : {};
         this.num = params.num ? params.num : 25.;
         this.cellSet = (function(_num) {
@@ -43,22 +44,44 @@
           return _base = set_i.rate;
         });
         this.cells = this.set(this.cellSet);
-        $("#plant").showD3({});
+        _num = this.num;
+        _cells = this.cells;
+        $("#plant").showD3({
+          w: 200,
+          h: 200,
+          num: _Math.ceil(_Math.sqrt(_num)),
+          data: _cells
+        });
         return this;
       },
-      events: {},
+      "events": {
+        "click #reset": "reset"
+      },
       render: function() {
         return this;
       },
       remove: function() {
         return this;
       },
+      reset: function() {
+        var _cells, _num;
+        console.log("click");
+        this.cells = this.set(this.cellSet);
+        _num = this.num;
+        _cells = this.cells;
+        return $("#plant").html("").showD3({
+          w: 200,
+          h: 200,
+          num: _Math.ceil(_Math.sqrt(_num)),
+          data: _cells
+        });
+      },
       set: function(cellset) {
-        var cell_i, cells, i, _Math, _num, _rnd;
+        var cell_i, cells, i, _num, _rnd;
         _num = this.num;
         _Math = Math;
         cells = [];
-        for (i = 0; 0 <= _num ? i <= _num : i >= _num; 0 <= _num ? i++ : i--) {
+        for (i = 0; 0 <= _num ? i < _num : i > _num; 0 <= _num ? i++ : i--) {
           _rnd = _Math.random();
           cell_i = null;
           cellset.map(function(set_i, idx) {

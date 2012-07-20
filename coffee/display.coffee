@@ -11,17 +11,15 @@ require([
     height = 400 - margin.top - margin.bottom
 
 
-    # interpolate
-    line = d3.svg.line()
-        .interpolate("basis")
-        .x((d) -> ex(d.x))
-        .y((d) -> ey(d.y))
 
-
+    _Math = Math
     $.fn.showD3 = (parmas) ->
         if (!parmas)
             return
         data = parmas.data
+
+        # row & column
+        num = parmas.num
 
         # margin
         margin = if (parmas.margin) then (parmas.margin) else ({})
@@ -39,8 +37,24 @@ require([
         height = height - margin.top - margin.bottom
 
         # domain
-        domainX = if (parmas.domainX) then (parmas.domainX) else ([0, 1])
-        domainY = if (parmas.domainY) then (parmas.domainY) else ([0, 1])
+        domainX = if (parmas.domainX) then (parmas.domainX) else ([0, num])
+        domainY = if (parmas.domainY) then (parmas.domainY) else ([0, num])
+
+        dx = d3.scale.linear()
+            .domain(domainX)
+            .range([0, width])
+        dy = d3.scale.linear()
+            .domain(domainY)
+            .range([height, 0])
+        dy2 = d3.scale.linear()
+            .domain(domainY)
+            .range([0, height])
+        # interpolate
+        line = d3.svg.line()
+            .interpolate("basis")
+            .x((d) -> dx(d.x))
+            .y((d) -> dy(d.y))
+
 
 
         # d3 start
@@ -51,51 +65,45 @@ require([
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
 
+        # box
         $svg.append("svg:rect")
             .attr("class", "box")
             .attr("width", width)
             .attr("height", height)
 
-        #dx = d3.scale.linear()
-        #    .domain(domainX)
-        #    .range([0, width])
-        #dy = d3.scale.linear()
-        #    .domain(domainY)
-        #    .range([height, 0])
+        # grid-line
+        for i in [0...num]
+            ((i) ->
+                r_data = d3.range(2).map((idx) ->
+                    {x: i, y: (idx * num)}
+                )
+                c_data = d3.range(2).map((idx) ->
+                    {x: (idx * num), y: i}
+                )
+                $svg.append("path")
+                    .datum(r_data)
+                    .attr("class", "line")
+                    .attr("d", line)
+                $svg.append("path")
+                    .datum(c_data)
+                    .attr("class", "line")
+                    .attr("d", line)
+            )(i)
 
-        #data.map((data_i, idx) ->
-        #    pt = d3.svg.line()
-        #        .interpolate("basis")
-        #        .x((d) -> dx(d.x) )
-        #        .y((d) -> dy(d.y) )
-
-        #    $svg.append("circle")
-        #        .datum(data_i)
-        #        .attr("class", dotSet)
-        #        .attr("cx", pt.x())
-        #        .attr("cy", pt.y())
-        #        .attr("r", 2.5)
-        #)
-
-        # axis
-        #xAxis = d3.svg.axis()
-        #    .scale(d3.scale.linear()
-        #            .domain(domainX)
-        #            .range([0, width]))
-        #    .orient("bottom")
-        #
-        #yAxis = d3.svg.axis()
-        #        .scale(d3.scale.linear()
-        #                .domain(domainY)
-        #                .range([height, 0]))
-        #        .orient("left")
-        #
-        #$svg.append("g")
-        #    .attr("class", "x axis")
-        #    .attr("transform", "translate(0," + height + ")")
-        #    .call(xAxis)
-        #$svg.append("g")
-        #        .attr("class", "y axis")
-        #        .call(yAxis)
+        dw = width / num
+        dh = height / num
+        for data_i, i in data
+            ((data_i, i) ->
+                type = data_i.type
+                className = type
+                px = dx(i % num)
+                py = dy2(_Math.floor(i / num))
+                $svg.append("svg:rect")
+                    .attr("class", className)
+                    .attr("x", px)
+                    .attr("y", py)
+                    .attr("width", dw)
+                    .attr("height", dh)
+            )(data_i, i)
 
 )

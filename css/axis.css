@@ -1,11 +1,3 @@
-.axis path, .axis line, .minor path, .minor line {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges; }
-
-.minor :not(.minor) {
-  display: none; }
-
 .line {
   fill: none;
   stroke: black;
@@ -33,5 +25,20 @@
 
 .box {
   fill: none;
+  stroke: black;
+  stroke-width: 1.5px; }
+
+.ghost {
+  fill: gray;
+  stroke: black;
+  stroke-width: 1.5px; }
+
+.role {
+  fill: steelblue;
+  stroke: black;
+  stroke-width: 1.5px; }
+
+.empty {
+  fill: white;
   stroke: black;
   stroke-width: 1.5px; }
