@@ -69,6 +69,7 @@
           var className, px, py, type;
           type = data_i.type;
           className = type;
+          className === "ghost" && (className += data_i.ghost.toString());
           px = dx(i % num);
           py = dy2(_Math.floor(i / num));
           return $svg.append("svg:rect").attr("class", className).attr("x", px).attr("y", py).attr("width", dw).attr("height", dh);

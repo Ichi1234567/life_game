@@ -14,13 +14,13 @@
       initialize: function(params) {
         var _base, _cells, _num;
         params = params ? params : {};
-        this.num = params.num ? params.num : 25.;
+        this.num = params.num ? params.num : 64.;
         this.cellSet = (function(_num) {
           var _cluster, _empties;
           _cluster = [
             {
               name: "role",
-              num: 7
+              num: 15
             }
           ];
           _empties = _num;
@@ -46,16 +46,19 @@
         this.cells = this.set(this.cellSet);
         _num = this.num;
         _cells = this.cells;
+        this.w = params.w ? params.w : 300.;
+        this.h = params.h ? params.h : 300.;
         $("#plant").showD3({
-          w: 200,
-          h: 200,
+          w: this.w,
+          h: this.h,
           num: _Math.ceil(_Math.sqrt(_num)),
           data: _cells
         });
         return this;
       },
       "events": {
-        "click #reset": "reset"
+        "click #reset": "reset",
+        "click #next": "next"
       },
       render: function() {
         return this;
@@ -64,14 +67,44 @@
         return this;
       },
       reset: function() {
-        var _cells, _num;
-        console.log("click");
+        var _cells, _h, _num, _w;
         this.cells = this.set(this.cellSet);
         _num = this.num;
         _cells = this.cells;
-        return $("#plant").html("").showD3({
-          w: 200,
-          h: 200,
+        _w = this.w;
+        _h = this.h;
+        $("#plant").html("").showD3({
+          w: _w,
+          h: _h,
+          num: _Math.ceil(_Math.sqrt(_num)),
+          data: _cells
+        });
+        return this;
+      },
+      next: function() {
+        var cells, i, mode, result, _cells, _h, _num, _stable, _w;
+        _cells = this.cells;
+        _num = this.num;
+        _stable = true;
+        mode = $("#mode option:selected").val();
+        for (i = 0; 0 <= _num ? i < _num : i > _num; 0 <= _num ? i++ : i--) {
+          result = (function(i, cells) {
+            return cells[i].move(cells, mode, {
+              EMPTY: BASIC,
+              ROLE: ROLE,
+              FOOD: FOOD,
+              ENEMY: ENEMY
+            });
+          })(i, _cells);
+          !result.stable && (_stable = false);
+          cells = result.cells;
+        }
+        this.cells = _cells;
+        _w = this.w;
+        _h = this.h;
+        return !_stable && $("#plant").html("").showD3({
+          w: _w,
+          h: _h,
           num: _Math.ceil(_Math.sqrt(_num)),
           data: _cells
         });

@@ -96,6 +96,9 @@ require([
             ((data_i, i) ->
                 type = data_i.type
                 className = type
+                (className == "ghost" && (
+                    className += (data_i.ghost).toString()
+                ))
                 px = dx(i % num)
                 py = dy2(_Math.floor(i / num))
                 $svg.append("svg:rect")
