@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>strftime</title>
+    <link href="css/axis.css" rel="stylesheet" type="text/css">
+    
+
+  </head>
+  <body>
+
+    S/B/G：<select id='mode'>
+        <option value="twoxtwo"> 125/36/ </option>
+        <option value="conway"> 23/3/ </option>
+        <option value="flakes"> 012345678/3/ </option>
+        <option value="maze"> 12345/3/ </option>
+        <option value="replicator"> 1357/1357/ </option>
+        <option value="logic"> /2/ </option>
+
+        <option value="brainbrain"> /2/1</option>
+        <option value="banners"> 2367/3457/5 </option>
+        <option value="ebbflow"> 012478/36/16 </option>
+        <option value="fireworks"> 2/13/19 </option>
+        <option value="rake"> 3467/2678/4 </option>
+        <option value="spirals"> 2/234/3 </option>
+    </select>
+    <br/>
+
+    <!--button id="clear">clear</button-->
+    <button id="reset">reset</button>
+    <!--button id="start">start</button>
+    <button id="pause">pause</button-->
+    <button id="next">next</button>
+    <!--button id="stop">stop</button>
+    <button id="add">add cell</button>
+    <button id="del">del cell</button-->
+    <br/>
+    <div id="plant"></div>
+
+
+
+    <script src="http://d3js.org/d3.v2.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script type="text/javascript" src="http://documentcloud.github.com/underscore/underscore-min.js"></script>
+    <script type="text/javascript" src="http://documentcloud.github.com/backbone/backbone-min.js"></script>
+    <script type="text/javascript" src="javascript/vender/mustache.js"></script>
+
+    <script>
+    var require = {"baseUrl":'javascript'}
+    </script>
+    <script data-main="main-lg" src="http://requirejs.org/docs/release/2.0.4/minified/require.js"></script>
+  </body>
+</html>
+
