@@ -21,7 +21,8 @@ define([
             @cellSet = ((_num) ->
                 _cluster = [{ # 以後換成適當的分類rule
                     name: "role",
-                    num : 15
+                    num : 15,
+                    dying: 0
                 }]  # empty, role
                 _empties = _num
                 _cluster.map((set_i) ->
@@ -148,6 +149,10 @@ define([
             _num = @num
             _Math = Math
             cells = []
+            _rule = $("#mode option:selected").html().split("/")
+            _dying_const = 0
+            if (_rule[2].length and _rule[2] != " ")
+                _dying_const = parseInt(_rule[2])
             for i in [0..._num]
                 _rnd = _Math.random()
                 cell_i = null
@@ -157,7 +162,8 @@ define([
                     _high = set_i.rate
                     (((_rnd - _low) * (_rnd - _high) <= 0) && (
                         cell_i = new cell_model[set_i.name]({
-                            position: i
+                            position: i,
+                            dying: _dying_const
                         })
                     ))
                 )

@@ -20,7 +20,8 @@
           _cluster = [
             {
               name: "role",
-              num: 15
+              num: 15,
+              dying: 0
             }
           ];
           _empties = _num;
@@ -140,10 +141,13 @@
         return this.current = (_current + 1) % 2;
       },
       set: function(cellset) {
-        var cell_i, cells, i, _num, _rnd;
+        var cell_i, cells, i, _dying_const, _num, _rnd, _rule;
         _num = this.num;
         _Math = Math;
         cells = [];
+        _rule = $("#mode option:selected").html().split("/");
+        _dying_const = 0;
+        if (_rule[2].length && _rule[2] !== " ") _dying_const = parseInt(_rule[2]);
         for (i = 0; 0 <= _num ? i < _num : i > _num; 0 <= _num ? i++ : i--) {
           _rnd = _Math.random();
           cell_i = null;
@@ -153,7 +157,8 @@
             idx && (_low = cellset[idx - 1].rate);
             _high = set_i.rate;
             return ((_rnd - _low) * (_rnd - _high) <= 0) && (cell_i = new cell_model[set_i.name]({
-              position: i
+              position: i,
+              dying: _dying_const
             }));
           });
           cells.push(cell_i);

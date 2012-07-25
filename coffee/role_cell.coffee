@@ -163,7 +163,7 @@ define([
             else
                 cells[position].type = "ghost"
 
-        (cells[position].type == "ghost" && cells[position].ghost++)
+        (cells[position].type == "ghost" && (cells[position].ghost++))
 
         (cells[position].ghost == 6 && (
             cells[position] = new EMPTY({
@@ -187,7 +187,7 @@ define([
             else
                 cells[position].type = "ghost"
 
-        (cells[position].type == "ghost" && cells[position].ghost++)
+        (cells[position].type == "ghost" && (cells[position].ghost++))
 
         (cells[position].ghost == 17 && (
             cells[position] = new EMPTY({
@@ -210,7 +210,7 @@ define([
             else
                 cells[position].type = "ghost"
 
-        (cells[position].type == "ghost" && cells[position].ghost++)
+        (cells[position].type == "ghost" && (cells[position].ghost++))
 
         (cells[position].ghost == 20 && (
             cells[position] = new EMPTY({
@@ -234,7 +234,7 @@ define([
             else
                 cells[position].type = "ghost"
 
-        (cells[position].type == "ghost" && cells[position].ghost++)
+        (cells[position].type == "ghost" && (cells[position].ghost++))
 
         (cells[position].ghost == 5 && (
             cells[position] = new EMPTY({
@@ -258,7 +258,7 @@ define([
             else
                 cells[position].type = "ghost"
 
-        (cells[position].type == "ghost" && cells[position].ghost++)
+        (cells[position].type == "ghost" && (cells[position].ghost++))
 
         (cells[position].ghost == 4 && (
             cells[position] = new EMPTY({
@@ -293,9 +293,21 @@ define([
     ####################################################
     class ROLE extends BASIC_CELL
         constructor: (params) ->
-            super
+            super(params)
             @type = "role"
             @speed = "2"
+
+            if (!!params.dying)
+                _dying = params.dying
+                _measure_num = _Math.random()
+                (_measure_num > 0.5 && (
+                    _measure_num = _Math.round(_Math.random() * (_dying - 1) + 1)
+                    ((_measure_num) && (
+                        @type = "ghost"
+                        @ghost = _measure_num
+                    ))
+                ))
+            @
 
         move: (current, cells, mode, opts) ->
             opts.rule = RULE
