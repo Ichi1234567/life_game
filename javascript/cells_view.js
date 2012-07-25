@@ -12,7 +12,7 @@
     };
     SCENE = Backbone.View.extend({
       initialize: function(params) {
-        var _base, _cells, _num;
+        var _base, _cells, _h, _num, _saveWorker, _this, _w;
         params = params ? params : {};
         this.num = params.num ? params.num : 64.;
         this.cellSet = (function(_num) {
@@ -48,12 +48,24 @@
         _cells = this.cells;
         this.w = params.w ? params.w : 300.;
         this.h = params.h ? params.h : 300.;
-        $("#plant").showD3({
-          w: this.w,
-          h: this.h,
-          num: _Math.ceil(_Math.sqrt(_num)),
-          data: _cells
+        _w = this.w;
+        _h = this.h;
+        this.current = 0;
+        $(".plant").each(function() {
+          return $(this).showD3({
+            w: _w,
+            h: _h,
+            num: _Math.ceil(_Math.sqrt(_num)),
+            data: _cells
+          });
         });
+        _saveWorker = new Worker("javascript/saveCurrent.js");
+        this.saveWorker = _saveWorker;
+        _this = this;
+        _saveWorker.onmessage = function(e) {
+          return _this.state = e.data;
+        };
+        _saveWorker.postMessage(this.cells);
         return this;
       },
       "events": {
@@ -67,29 +79,38 @@
         return this;
       },
       reset: function() {
-        var _cells, _h, _num, _w;
+        var _cells, _current, _h, _num, _w;
         this.cells = this.set(this.cellSet);
         _num = this.num;
         _cells = this.cells;
         _w = this.w;
         _h = this.h;
-        $("#plant").html("").showD3({
-          w: _w,
-          h: _h,
-          num: _Math.ceil(_Math.sqrt(_num)),
-          data: _cells
+        _current = this.current;
+        $(".plant").each(function(idx, elm) {
+          var _chk;
+          _chk = idx - _current;
+          _chk && $(elm).html("").showD3({
+            w: _w,
+            h: _h,
+            num: _Math.ceil(_Math.sqrt(_num)),
+            data: _cells
+          }).css("display", "block");
+          return (!_chk) && $(elm).css("display", "none");
         });
+        this.current = (_current + 1) % 2;
         return this;
       },
       next: function() {
-        var cells, i, mode, result, _cells, _h, _num, _stable, _w;
+        var cells, i, mode, result, _cells, _current, _h, _num, _stable, _state, _w;
+        _current = this.current;
         _cells = this.cells;
         _num = this.num;
+        _state = this.state;
         _stable = true;
         mode = $("#mode option:selected").val();
         for (i = 0; 0 <= _num ? i < _num : i > _num; 0 <= _num ? i++ : i--) {
           result = (function(i, cells) {
-            return cells[i].move(cells, mode, {
+            return cells[i].move(_state, cells, mode, {
               EMPTY: BASIC,
               ROLE: ROLE,
               FOOD: FOOD,
@@ -102,12 +123,17 @@
         this.cells = _cells;
         _w = this.w;
         _h = this.h;
-        return !_stable && $("#plant").html("").showD3({
-          w: _w,
-          h: _h,
-          num: _Math.ceil(_Math.sqrt(_num)),
-          data: _cells
-        });
+        this.saveWorker.postMessage(this.cells);
+        _state = this.state;
+        if (!_stable) {
+          $(".plant").each(function(idx, elm) {
+            var _chk;
+            _chk = idx - _current;
+            _chk && $(elm).updateD3(_cells).css("display", "block");
+            return (!_chk) && $(elm).css("display", "none");
+          });
+        }
+        return this.current = (_current + 1) % 2;
       },
       set: function(cellset) {
         var cell_i, cells, i, _num, _rnd;

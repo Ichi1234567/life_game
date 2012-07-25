@@ -3,7 +3,7 @@ define([
 ], (BASIC_CELL) ->
     console.log("role_cell")
     _Math = Math
-    chkbyNei = (thisCell, cells, num) ->
+    chkbyNei = (thisCell, current, cells, num) ->
         position = thisCell.position
         thisCell.lifecycle++
         c_size = _Math.sqrt(num)
@@ -20,7 +20,7 @@ define([
         bedead = 0
         delta.map((delta_i)->
             nei_pos = position + delta_i
-            cell_nei = cells[nei_pos]
+            cell_nei = current[nei_pos]
             if (!!cell_nei && cell_nei.type == "role")
                 ghost_i = cell_nei.ghost
                 ((typeof ghost_i == "number" && !ghost_i) && (bedead++))
@@ -31,11 +31,11 @@ define([
 
 
     ####################################################
-    _twoxtwo = (thisCell, cells, opts) ->
+    _twoxtwo = (thisCell, current, cells, opts) ->
         #console.log(thisCell)
         #console.log(cells)
         position = thisCell.position
-        bedead = chkbyNei(thisCell, cells, opts.num)
+        bedead = chkbyNei(thisCell, current, cells, opts.num)
         EMPTY = opts.EMPTY
         _origin_type = thisCell.type
         switch (bedead)
@@ -52,9 +52,9 @@ define([
             stable: _stable
         }
 
-    _conway = (thisCell, cells, opts) ->
+    _conway = (thisCell, current, cells, opts) ->
         position = thisCell.position
-        bedead = chkbyNei(thisCell, cells, opts.num)
+        bedead = chkbyNei(thisCell, current, cells, opts.num)
         EMPTY = opts.EMPTY
         _origin_type = thisCell.type
         switch (bedead)
@@ -71,15 +71,15 @@ define([
             stable: _stable
         }
 
-    _flakes = (thisCell, cells, opts) ->
+    _flakes = (thisCell, current, cells, opts) ->
         {
             cells: cells
             stable: true
         }
 
-    _maze = (thisCell, cells, opts) ->
+    _maze = (thisCell, current, cells, opts) ->
         position = thisCell.position
-        bedead = chkbyNei(thisCell, cells, opts.num)
+        bedead = chkbyNei(thisCell, current, cells, opts.num)
         EMPTY = opts.EMPTY
         _origin_type = thisCell.type
         switch (bedead)
@@ -96,9 +96,9 @@ define([
             stable: _stable
         }
 
-    _replicator = (thisCell, cells, opts) ->
+    _replicator = (thisCell, current, cells, opts) ->
         position = thisCell.position
-        bedead = chkbyNei(thisCell, cells, opts.num)
+        bedead = chkbyNei(thisCell, current, cells, opts.num)
         EMPTY = opts.EMPTY
         _origin_type = thisCell.type
         switch (bedead)
@@ -115,9 +115,9 @@ define([
             stable: _stable
         }
 
-    _logic = (thisCell, cells, opts) ->
+    _logic = (thisCell, current, cells, opts) ->
         position = thisCell.position
-        bedead = chkbyNei(thisCell, cells, opts.num)
+        bedead = chkbyNei(thisCell, current, cells, opts.num)
         EMPTY = opts.EMPTY
         _origin_type = thisCell.type
         _stable = _origin_type == "empty"
@@ -134,9 +134,9 @@ define([
         ####################################
         # there's ghost state
 
-    _brainbrain = (thisCell, cells, opts) ->
+    _brainbrain = (thisCell, current, cells, opts) ->
         position = thisCell.position
-        bedead = chkbyNei(thisCell, cells, opts.num)
+        bedead = chkbyNei(thisCell, current, cells, opts.num)
         EMPTY = opts.EMPTY
         _origin_type = thisCell.type
         cells[position].type = "ghost"
@@ -153,9 +153,9 @@ define([
         }
 
 
-    _banners = (thisCell, cells, opts) ->
+    _banners = (thisCell, current, cells, opts) ->
         position = thisCell.position
-        bedead = chkbyNei(thisCell, cells, opts.num)
+        bedead = chkbyNei(thisCell, current, cells, opts.num)
         EMPTY = opts.EMPTY
         _origin_type = thisCell.type
         switch (bedead)
@@ -177,9 +177,9 @@ define([
         }
 
 
-    _ebbflow = (thisCell, cells, opts) ->
+    _ebbflow = (thisCell, current, cells, opts) ->
         position = thisCell.position
-        bedead = chkbyNei(thisCell, cells, opts.num)
+        bedead = chkbyNei(thisCell, current, cells, opts.num)
         EMPTY = opts.EMPTY
         _origin_type = thisCell.type
         switch (bedead)
@@ -200,9 +200,9 @@ define([
             stable: false
         }
 
-    _fireworks = (thisCell, cells, opts) ->
+    _fireworks = (thisCell, current, cells, opts) ->
         position = thisCell.position
-        bedead = chkbyNei(thisCell, cells, opts.num)
+        bedead = chkbyNei(thisCell, current, cells, opts.num)
         EMPTY = opts.EMPTY
         _origin_type = thisCell.type
         switch (bedead)
@@ -224,9 +224,9 @@ define([
         }
 
 
-    _rake = (thisCell, cells, opts) ->
+    _rake = (thisCell, current, cells, opts) ->
         position = thisCell.position
-        bedead = chkbyNei(thisCell, cells, opts.num)
+        bedead = chkbyNei(thisCell, current, cells, opts.num)
         EMPTY = opts.EMPTY
         _origin_type = thisCell.type
         switch (bedead)
@@ -248,9 +248,9 @@ define([
         }
 
 
-    _spirals = (thisCell, cells, opts) ->
+    _spirals = (thisCell, current, cells, opts) ->
         position = thisCell.position
-        bedead = chkbyNei(thisCell, cells, opts.num)
+        bedead = chkbyNei(thisCell, current, cells, opts.num)
         EMPTY = opts.EMPTY
         _origin_type = thisCell.type
         switch (bedead)
@@ -297,9 +297,9 @@ define([
             @type = "role"
             @speed = "2"
 
-        move: (cells, mode, opts) ->
+        move: (current, cells, mode, opts) ->
             opts.rule = RULE
-            super(cells, mode, opts)
+            super(current, cells, mode, opts)
 
     ROLE
 )
