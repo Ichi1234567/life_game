@@ -14,8 +14,8 @@
     width = 400 - margin.left - margin.right;
     height = 400 - margin.top - margin.bottom;
     _Math = Math;
-    return $.fn.showD3 = function(parmas) {
-      var $svg, data, data_i, dh, domainX, domainY, dw, dx, dy, dy2, i, line, num, _fn, _len, _results;
+    $.fn.showD3 = function(parmas) {
+      var $svg, data, data_i, dh, domainX, domainY, dw, dx, dy, dy2, i, line, num, _fn, _len;
       if (!parmas) return;
       data = parmas.data;
       num = parmas.num;
@@ -40,42 +40,34 @@
       });
       $svg = d3.selectAll(this).append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
       $svg.append("svg:rect").attr("class", "box").attr("width", width).attr("height", height);
-      _fn = function(i) {
-        var c_data, r_data;
-        r_data = d3.range(2).map(function(idx) {
-          return {
-            x: i,
-            y: idx * num
-          };
-        });
-        c_data = d3.range(2).map(function(idx) {
-          return {
-            x: idx * num,
-            y: i
-          };
-        });
-        $svg.append("path").datum(r_data).attr("class", "line").attr("d", line);
-        return $svg.append("path").datum(c_data).attr("class", "line").attr("d", line);
-      };
-      for (i = 0; 0 <= num ? i < num : i > num; 0 <= num ? i++ : i--) {
-        _fn(i);
-      }
       dw = width / num;
       dh = height / num;
-      _results = [];
+      _fn = function(data_i, i) {
+        var className, px, py, type;
+        type = data_i.type;
+        className = type;
+        className === "ghost" && (className += data_i.ghost.toString());
+        px = dx(i % num);
+        py = dy2(_Math.floor(i / num));
+        return $svg.append("svg:rect").attr("id", "grid_" + i).attr("class", className).attr("x", px).attr("y", py).attr("width", dw).attr("height", dh);
+      };
       for (i = 0, _len = data.length; i < _len; i++) {
         data_i = data[i];
-        _results.push((function(data_i, i) {
-          var className, px, py, type;
-          type = data_i.type;
-          className = type;
-          className === "ghost" && (className += data_i.ghost.toString());
-          px = dx(i % num);
-          py = dy2(_Math.floor(i / num));
-          return $svg.append("svg:rect").attr("class", className).attr("x", px).attr("y", py).attr("width", dw).attr("height", dh);
-        })(data_i, i));
+        _fn(data_i, i);
       }
-      return _results;
+      return this;
+    };
+    return $.fn.updateD3 = function(cells) {
+      var elm;
+      elm = d3.select(this[0]);
+      cells.map(function(thisCell) {
+        var _className, _id;
+        _id = "#grid_" + thisCell.position;
+        _className = thisCell.type;
+        _className === "ghost" && (_className += thisCell.ghost.toString());
+        return elm.select(_id).attr("class", _className);
+      });
+      return this;
     };
   });
 

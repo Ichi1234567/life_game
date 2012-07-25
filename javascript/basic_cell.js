@@ -3,7 +3,7 @@
   define([], function() {
     var MODEL, RULE, chkbyNei, _Math, _banners, _brainbrain, _conway, _ebbflow, _fireworks, _flakes, _logic, _maze, _rake, _replicator, _spirals, _twoxtwo;
     _Math = Math;
-    chkbyNei = function(thisCell, cells, num) {
+    chkbyNei = function(thisCell, current, cells, num) {
       var bedead, c_size, delta, position;
       position = thisCell.position;
       thisCell.lifecycle++;
@@ -13,7 +13,7 @@
       delta.map(function(delta_i) {
         var cell_nei, ghost_i, nei_pos;
         nei_pos = position + delta_i;
-        cell_nei = cells[nei_pos];
+        cell_nei = current[nei_pos];
         if (!!cell_nei && cell_nei.type === "role") {
           ghost_i = cell_nei.ghost;
           return (typeof ghost_i === "number" && !ghost_i) && (bedead++);
@@ -22,10 +22,10 @@
       (thisCell.type === "role") && (bedead--);
       return bedead;
     };
-    _twoxtwo = function(thisCell, cells, opts) {
+    _twoxtwo = function(thisCell, current, cells, opts) {
       var ROLE, bedead, position, _origin_type, _stable;
       position = thisCell.position;
-      bedead = chkbyNei(thisCell, cells, opts.num);
+      bedead = chkbyNei(thisCell, current, cells, opts.num);
       ROLE = opts.ROLE;
       _origin_type = thisCell.type;
       switch (bedead) {
@@ -41,10 +41,10 @@
         stable: _stable
       };
     };
-    _conway = function(thisCell, cells, opts) {
+    _conway = function(thisCell, current, cells, opts) {
       var ROLE, bedead, position, _origin_type, _stable;
       position = thisCell.position;
-      bedead = chkbyNei(thisCell, cells, opts.num);
+      bedead = chkbyNei(thisCell, current, cells, opts.num);
       ROLE = opts.ROLE;
       _origin_type = thisCell.type;
       switch (bedead) {
@@ -61,10 +61,10 @@
     };
     _flakes = _conway;
     _maze = _conway;
-    _replicator = function(thisCell, cells, opts) {
+    _replicator = function(thisCell, current, cells, opts) {
       var ROLE, bedead, position, _origin_type, _stable;
       position = thisCell.position;
-      bedead = chkbyNei(thisCell, cells, opts.num);
+      bedead = chkbyNei(thisCell, current, cells, opts.num);
       ROLE = opts.ROLE;
       _origin_type = thisCell.type;
       switch (bedead) {
@@ -82,10 +82,10 @@
         stable: _stable
       };
     };
-    _logic = function(thisCell, cells, opts) {
+    _logic = function(thisCell, current, cells, opts) {
       var ROLE, bedead, position, _origin_type, _stable;
       position = thisCell.position;
-      bedead = chkbyNei(thisCell, cells, opts.num);
+      bedead = chkbyNei(thisCell, current, cells, opts.num);
       ROLE = opts.ROLE;
       _origin_type = thisCell.type;
       switch (bedead) {
@@ -101,10 +101,10 @@
       };
     };
     _brainbrain = _logic;
-    _banners = function(thisCell, cells, opts) {
+    _banners = function(thisCell, current, cells, opts) {
       var ROLE, bedead, position, _origin_type, _stable;
       position = thisCell.position;
-      bedead = chkbyNei(thisCell, cells, opts.num);
+      bedead = chkbyNei(thisCell, current, cells, opts.num);
       ROLE = opts.ROLE;
       _origin_type = thisCell.type;
       switch (bedead) {
@@ -122,10 +122,10 @@
         stable: _stable
       };
     };
-    _ebbflow = function(thisCell, cells, opts) {
+    _ebbflow = function(thisCell, current, cells, opts) {
       var ROLE, bedead, position, _origin_type, _stable;
       position = thisCell.position;
-      bedead = chkbyNei(thisCell, cells, opts.num);
+      bedead = chkbyNei(thisCell, current, cells, opts.num);
       ROLE = opts.ROLE;
       _origin_type = thisCell.type;
       switch (bedead) {
@@ -141,10 +141,10 @@
         stable: _stable
       };
     };
-    _fireworks = function(thisCell, cells, opts) {
+    _fireworks = function(thisCell, current, cells, opts) {
       var ROLE, bedead, position, _origin_type, _stable;
       position = thisCell.position;
-      bedead = chkbyNei(thisCell, cells, opts.num);
+      bedead = chkbyNei(thisCell, current, cells, opts.num);
       ROLE = opts.ROLE;
       _origin_type = thisCell.type;
       switch (bedead) {
@@ -160,10 +160,10 @@
         stable: _stable
       };
     };
-    _rake = function(thisCell, cells, opts) {
+    _rake = function(thisCell, current, cells, opts) {
       var ROLE, bedead, position, _origin_type, _stable;
       position = thisCell.position;
-      bedead = chkbyNei(thisCell, cells, opts.num);
+      bedead = chkbyNei(thisCell, current, cells, opts.num);
       ROLE = opts.ROLE;
       _origin_type = thisCell.type;
       switch (bedead) {
@@ -181,10 +181,10 @@
         stable: _stable
       };
     };
-    _spirals = function(thisCell, cells, opts) {
+    _spirals = function(thisCell, current, cells, opts) {
       var ROLE, bedead, position, _origin_type, _stable;
       position = thisCell.position;
-      bedead = chkbyNei(thisCell, cells, opts.num);
+      bedead = chkbyNei(thisCell, current, cells, opts.num);
       ROLE = opts.ROLE;
       _origin_type = thisCell.type;
       switch (bedead) {
@@ -233,7 +233,16 @@
         this.ghost = 0;
         return this;
       },
-      move: function(cells, mode, opts) {
+      getData: function() {
+        return {
+          type: this.type,
+          speed: this.speed,
+          position: this.position,
+          ghost: this.ghost,
+          lifecycle: this.lifecycle
+        };
+      },
+      move: function(current, cells, mode, opts) {
         var result, _rule;
         opts = opts ? opts : {};
         opts.num = cells.length;
@@ -245,7 +254,7 @@
             stable: true
           };
         }
-        return result = _rule[mode](this, cells, opts);
+        return result = _rule[mode](this, current, cells, opts);
       }
     });
     return MODEL;

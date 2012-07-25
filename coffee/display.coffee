@@ -72,23 +72,23 @@ require([
             .attr("height", height)
 
         # grid-line
-        for i in [0...num]
-            ((i) ->
-                r_data = d3.range(2).map((idx) ->
-                    {x: i, y: (idx * num)}
-                )
-                c_data = d3.range(2).map((idx) ->
-                    {x: (idx * num), y: i}
-                )
-                $svg.append("path")
-                    .datum(r_data)
-                    .attr("class", "line")
-                    .attr("d", line)
-                $svg.append("path")
-                    .datum(c_data)
-                    .attr("class", "line")
-                    .attr("d", line)
-            )(i)
+        #for i in [0...num]
+        #    ((i) ->
+        #        r_data = d3.range(2).map((idx) ->
+        #            {x: i, y: (idx * num)}
+        #        )
+        #        c_data = d3.range(2).map((idx) ->
+        #            {x: (idx * num), y: i}
+        #        )
+        #        $svg.append("path")
+        #            .datum(r_data)
+        #            .attr("class", "line")
+        #            .attr("d", line)
+        #        $svg.append("path")
+        #            .datum(c_data)
+        #            .attr("class", "line")
+        #            .attr("d", line)
+        #    )(i)
 
         dw = width / num
         dh = height / num
@@ -102,11 +102,25 @@ require([
                 px = dx(i % num)
                 py = dy2(_Math.floor(i / num))
                 $svg.append("svg:rect")
+                    .attr("id", ("grid_" + i))
                     .attr("class", className)
                     .attr("x", px)
                     .attr("y", py)
                     .attr("width", dw)
                     .attr("height", dh)
             )(data_i, i)
+        @
 
+
+    $.fn.updateD3 = (cells) ->
+        elm = d3.select(this[0])
+        cells.map((thisCell) ->
+            _id = "#grid_" + thisCell.position
+            _className = thisCell.type
+            (_className == "ghost" && (
+                _className += (thisCell.ghost).toString()
+            ))
+            elm.select(_id).attr("class", _className)
+        )
+        @
 )

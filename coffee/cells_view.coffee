@@ -48,12 +48,30 @@ define([
             _cells = @cells
             @w = if (params.w) then (params.w) else (300)
             @h = if (params.h) then (params.h) else (300)
-            $("#plant").showD3({
-                w: @w,
-                h: @h,
-                num: _Math.ceil(_Math.sqrt(_num)),
-                data: _cells
-            })
+            #$("#plant").showD3({
+            #    w: @w,
+            #    h: @h,
+            #    num: _Math.ceil(_Math.sqrt(_num)),
+            #    data: _cells
+            #})
+            _w = @w
+            _h = @h
+            @current = 0
+            $(".plant").each(() ->
+                $(this).showD3({
+                    w: _w,
+                    h: _h,
+                    num: _Math.ceil(_Math.sqrt(_num)),
+                    data: _cells
+                })
+            )
+            _saveWorker = new Worker("javascript/saveCurrent.js")
+            @saveWorker = _saveWorker
+            _this = @
+            _saveWorker.onmessage = (e) ->
+                _this.state = e.data
+
+            _saveWorker.postMessage(@cells)
             @
         "events": {
             "click #reset": "reset"
@@ -72,30 +90,37 @@ define([
             _cells = @cells
             _w = @w
             _h = @h
-            $("#plant").html("").showD3({
-                w: _w,
-                h: _h,
-                num: _Math.ceil(_Math.sqrt(_num)),
-                data: _cells
-            })
+            _current = @current
+            $(".plant").each((idx, elm) ->
+                _chk = idx - _current
+                ((_chk) && $(elm).html("").showD3({
+                    w: _w,
+                    h: _h,
+                    num: _Math.ceil(_Math.sqrt(_num)),
+                    data: _cells
+                }).css("display", "block"))
+                ((!_chk) && $(elm).css("display", "none"))
+            )
+            @current = (_current + 1) % 2
             @
 
         next: () ->
             #console.log("click next")
+            _current = @current
             _cells = @cells
             _num = @num
+            _state = @state
             #_cells = _cells[0].move(_cells, "twotwo")
             _stable = true
             mode = $("#mode option:selected").val()
             for i in [0..._num]
                 result = ((i, cells)->
                     #cells[i].move(cells, "twotwo")
-                    cells[i].move(cells, mode, {
+                    cells[i].move(_state, cells, mode, {
                         EMPTY: BASIC,
                         ROLE: ROLE,
                         FOOD: FOOD,
                         ENEMY: ENEMY
-
                     })
                 )(i, _cells)
                 (!result.stable && (_stable = false))
@@ -104,12 +129,15 @@ define([
             _w = @w
             _h = @h
             #console.log(_stable)
-            (!_stable && $("#plant").html("").showD3({
-                w: _w,
-                h: _h,
-                num: _Math.ceil(_Math.sqrt(_num)),
-                data: _cells
-            }))
+            @saveWorker.postMessage(@cells)
+            _state = @state
+            if (!_stable)
+                $(".plant").each((idx, elm) ->
+                    _chk = idx - _current
+                    ((_chk) && $(elm).updateD3(_cells).css("display", "block"))
+                    ((!_chk) && $(elm).css("display", "none"))
+                    )
+            @current = (_current + 1) % 2
 
 
         set: (cellset) ->
