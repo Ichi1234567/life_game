@@ -57,13 +57,14 @@ define([
             _w = @w
             _h = @h
             @current = 0
-            $(".plant").each(() ->
+            $(".plant").each((idx) ->
                 $(this).showD3({
                     w: _w,
                     h: _h,
                     num: _Math.ceil(_Math.sqrt(_num)),
                     data: _cells
                 })
+                (idx && $(this).css("top", -(_h + 5)))
             )
             _saveWorker = new Worker("javascript/saveCurrent.js")
             @saveWorker = _saveWorker
@@ -91,6 +92,7 @@ define([
             _w = @w
             _h = @h
             _current = @current
+            @saveWorker.postMessage(_cells)
             $(".plant").each((idx, elm) ->
                 _chk = idx - _current
                 ((_chk) && $(elm).html("").showD3({
@@ -98,8 +100,9 @@ define([
                     h: _h,
                     num: _Math.ceil(_Math.sqrt(_num)),
                     data: _cells
-                }).css("display", "block"))
-                ((!_chk) && $(elm).css("display", "none"))
+                }).css("visibility", "visible"))
+                ((!_chk) && $(elm).css("visibility", "hidden"))
+                true
             )
             @current = (_current + 1) % 2
             @
@@ -134,9 +137,10 @@ define([
             if (!_stable)
                 $(".plant").each((idx, elm) ->
                     _chk = idx - _current
-                    ((_chk) && $(elm).updateD3(_cells).css("display", "block"))
-                    ((!_chk) && $(elm).css("display", "none"))
-                    )
+                    ((_chk) && $(elm).updateD3(_cells).css("visibility", "visible"))
+                    ((!_chk) && $(elm).css("visibility", "hidden"))
+                    true
+                )
             @current = (_current + 1) % 2
 
 

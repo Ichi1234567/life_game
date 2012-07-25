@@ -51,13 +51,14 @@
         _w = this.w;
         _h = this.h;
         this.current = 0;
-        $(".plant").each(function() {
-          return $(this).showD3({
+        $(".plant").each(function(idx) {
+          $(this).showD3({
             w: _w,
             h: _h,
             num: _Math.ceil(_Math.sqrt(_num)),
             data: _cells
           });
+          return idx && $(this).css("top", -(_h + 5));
         });
         _saveWorker = new Worker("javascript/saveCurrent.js");
         this.saveWorker = _saveWorker;
@@ -86,6 +87,7 @@
         _w = this.w;
         _h = this.h;
         _current = this.current;
+        this.saveWorker.postMessage(_cells);
         $(".plant").each(function(idx, elm) {
           var _chk;
           _chk = idx - _current;
@@ -94,8 +96,9 @@
             h: _h,
             num: _Math.ceil(_Math.sqrt(_num)),
             data: _cells
-          }).css("display", "block");
-          return (!_chk) && $(elm).css("display", "none");
+          }).css("visibility", "visible");
+          (!_chk) && $(elm).css("visibility", "hidden");
+          return true;
         });
         this.current = (_current + 1) % 2;
         return this;
@@ -129,8 +132,9 @@
           $(".plant").each(function(idx, elm) {
             var _chk;
             _chk = idx - _current;
-            _chk && $(elm).updateD3(_cells).css("display", "block");
-            return (!_chk) && $(elm).css("display", "none");
+            _chk && $(elm).updateD3(_cells).css("visibility", "visible");
+            (!_chk) && $(elm).css("visibility", "hidden");
+            return true;
           });
         }
         return this.current = (_current + 1) % 2;
