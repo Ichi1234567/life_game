@@ -14,46 +14,65 @@ define([
         enemy: ENEMY
     }
 
+    ROUTINES = {
+        evalSet: (num, ghost_num, opts) ->
+            ghost_num = if (ghost_num) then (ghost_num) else (0)
+            _base = 0.30
+            switch ghost_num
+                when (0) then
+                else
+                    _base *= (1 + ghost_num / 40)
+
+            _Math.round(num * _base)
+
+        sortSets: (sets, opts) ->
+            _num = opts.num
+            _empty = _num
+            sets.forEach((elm, idx) ->
+                _empty -= elm.num
+            )
+            sets.push({
+                name: "empty",
+                num: _empty
+            })
+            sets = sets.sort((a, b) ->
+                a.num - b.num
+            )
+
+            count = 0
+            sets = sets.map((set_i) ->
+                count += set_i.num
+                set_i.rate = count / _num
+                set_i
+            )
+            sets
+        generateSets: (totalNum, opts) ->
+            opts = if (opts) then (opts) else ({})
+            _types = if (opts.types) then (opts.types) else (["role"])
+            _ghost = if (opts.ghost) then (opts.ghost) else (0)
+            tmp_sets = _types.map((type_i) ->
+                num = ROUTINES.evalSet(totalNum, _ghost)
+                {
+                    name: type_i
+                    num: num
+                }
+            )
+            sets = ROUTINES.sortSets(tmp_sets, {
+                num: totalNum
+            })
+            sets
+    }
+
     SCENE = Backbone.View.extend({
         initialize: (params) ->
             params = if (params) then (params) else ({})
             @num = if (params.num) then (params.num) else (64)
-            @cellSet = ((_num) ->
-                _cluster = [{ # 以後換成適當的分類rule
-                    name: "role",
-                    num : 18
-                }]  # empty, role
-                _empties = _num
-                _cluster.map((set_i) ->
-                    set_i.rate = set_i.num / _num
-                    _empties -= set_i.num
-                )
-                _cluster.push({
-                    name: "empty",
-                    num: _empties,
-                    rate: (_empties / _num)
-                })
-                _cluster = _cluster.sort((a, b) ->
-                    a.num - b.num
-                )
-                _cluster
-            )(@num)
-            _base = 0
-            @cellSet.map((set_i) ->
-                set_i.rate += _base
-                _base = set_i.rate
-            )
+            @cellSet = ROUTINES.generateSets(@num)
             @cells = @set(@cellSet)
             _num = @num
             _cells = @cells
             @w = if (params.w) then (params.w) else (300)
             @h = if (params.h) then (params.h) else (300)
-            #$("#plant").showD3({
-            #    w: @w,
-            #    h: @h,
-            #    num: _Math.ceil(_Math.sqrt(_num)),
-            #    data: _cells
-            #})
             _w = @w
             _h = @h
             @current = 0
@@ -78,7 +97,7 @@ define([
             "click #reset": "reset"
             "click #next": "next"
             "change #rnd_ghost": "chk_rnd_ghost"
-            "change #mode": "reset"
+            "change #mode": "chg_mode"
         }
         render: () ->
             @
@@ -89,7 +108,19 @@ define([
         chk_rnd_ghost: () ->
             _rule = $("#mode option:selected").html().split("/")
             if (_rule[2].length && _rule[2] != " ")
+                @cellSet = ROUTINES.generateSets(@num, {
+                    ghost: parseInt(_rule[2])
+                })
                 @reset()
+            @
+        chg_mode: () ->
+            _rule = $("#mode option:selected").html().split("/")
+            _chk_ghost = !!$("#rnd_ghost").attr("checked")
+            _ghost = if (_chk_ghost && _rule[2].length && _rule[2] != " ") then (parseInt(_rule[2])) else (0)
+            @cellSet = ROUTINES.generateSets(@num, {
+                ghost: _ghost
+            })
+            @reset()
             @
 
         reset: () ->

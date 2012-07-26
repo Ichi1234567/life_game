@@ -7,19 +7,34 @@
     console.log("role_cell");
     _Math = Math;
     chkbyNei = function(thisCell, current, cells, num) {
-      var bedead, c_size, delta, position;
+      var bedead, c_size, delta, position, this_row;
       position = thisCell.position;
       thisCell.lifecycle++;
       c_size = _Math.sqrt(num);
+      this_row = _Math.floor(position / c_size);
       delta = [1, -1, -c_size, -c_size + 1, -c_size - 1, c_size, c_size + 1, c_size - 1];
       bedead = 0;
-      delta.map(function(delta_i) {
-        var cell_nei, ghost_i, nei_pos;
+      delta.map(function(delta_i, idx) {
+        var abs_delta_i, cell_nei, chk_row, ghost_i, nei_pos, row;
+        abs_delta_i = _Math.abs(delta_i);
+        switch (true) {
+          case abs_delta_i < 2:
+            chk_row = 0;
+            break;
+          case delta_i > 0:
+            chk_row = 1;
+            break;
+          case delta_i < 0:
+            chk_row = -1;
+        }
         nei_pos = position + delta_i;
-        cell_nei = current[nei_pos];
-        if (!!cell_nei && cell_nei.type === "role") {
-          ghost_i = cell_nei.ghost;
-          return (typeof ghost_i === "number" && !ghost_i) && (bedead++);
+        row = _Math.floor(nei_pos / c_size);
+        if ((row - this_row) === chk_row) {
+          cell_nei = current[nei_pos];
+          if (!!cell_nei && cell_nei.type === "role") {
+            ghost_i = cell_nei.ghost;
+            return (typeof ghost_i === "number" && !ghost_i) && (bedead++);
+          }
         }
       });
       (thisCell.type === "role") && (bedead--);
@@ -298,7 +313,7 @@
         if (!!params.dying) {
           _dying = params.dying;
           _measure_num = _Math.random();
-          _measure_num > 0.5 && (_measure_num = _Math.round(_Math.random() * (_dying - 1) + 1), _measure_num && (this.type = "ghost", this.ghost = _measure_num));
+          _measure_num > 0.7 && (_measure_num = _Math.round(_Math.random() * (_dying - 1) + 1), _measure_num && (this.type = "ghost", this.ghost = _measure_num));
         }
         this;
       }

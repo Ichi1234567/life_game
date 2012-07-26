@@ -1,7 +1,7 @@
 (function() {
 
   define(["basic_cell", "role_cell", "food_cell", "enemy_cell", "display"], function(BASIC, ROLE, FOOD, ENEMY, DISPLAY) {
-    var SCENE, cell_model, _Math;
+    var ROUTINES, SCENE, cell_model, _Math;
     console.log("cells_view");
     _Math = Math;
     cell_model = {
@@ -10,39 +10,66 @@
       food: FOOD,
       enemy: ENEMY
     };
+    ROUTINES = {
+      evalSet: function(num, ghost_num, opts) {
+        var _base;
+        ghost_num = ghost_num ? ghost_num : 0.;
+        _base = 0.30;
+        switch (ghost_num) {
+          case 0.:
+            break;
+          default:
+            _base *= 1 + ghost_num / 40;
+        }
+        return _Math.round(num * _base);
+      },
+      sortSets: function(sets, opts) {
+        var count, _empty, _num;
+        _num = opts.num;
+        _empty = _num;
+        sets.forEach(function(elm, idx) {
+          return _empty -= elm.num;
+        });
+        sets.push({
+          name: "empty",
+          num: _empty
+        });
+        sets = sets.sort(function(a, b) {
+          return a.num - b.num;
+        });
+        count = 0;
+        sets = sets.map(function(set_i) {
+          count += set_i.num;
+          set_i.rate = count / _num;
+          return set_i;
+        });
+        return sets;
+      },
+      generateSets: function(totalNum, opts) {
+        var sets, tmp_sets, _ghost, _types;
+        opts = opts ? opts : {};
+        _types = opts.types ? opts.types : ["role"];
+        _ghost = opts.ghost ? opts.ghost : 0.;
+        tmp_sets = _types.map(function(type_i) {
+          var num;
+          num = ROUTINES.evalSet(totalNum, _ghost);
+          return {
+            name: type_i,
+            num: num
+          };
+        });
+        sets = ROUTINES.sortSets(tmp_sets, {
+          num: totalNum
+        });
+        return sets;
+      }
+    };
     SCENE = Backbone.View.extend({
       initialize: function(params) {
-        var _base, _cells, _h, _num, _saveWorker, _this, _w;
+        var _cells, _h, _num, _saveWorker, _this, _w;
         params = params ? params : {};
         this.num = params.num ? params.num : 64.;
-        this.cellSet = (function(_num) {
-          var _cluster, _empties;
-          _cluster = [
-            {
-              name: "role",
-              num: 18
-            }
-          ];
-          _empties = _num;
-          _cluster.map(function(set_i) {
-            set_i.rate = set_i.num / _num;
-            return _empties -= set_i.num;
-          });
-          _cluster.push({
-            name: "empty",
-            num: _empties,
-            rate: _empties / _num
-          });
-          _cluster = _cluster.sort(function(a, b) {
-            return a.num - b.num;
-          });
-          return _cluster;
-        })(this.num);
-        _base = 0;
-        this.cellSet.map(function(set_i) {
-          set_i.rate += _base;
-          return _base = set_i.rate;
-        });
+        this.cellSet = ROUTINES.generateSets(this.num);
         this.cells = this.set(this.cellSet);
         _num = this.num;
         _cells = this.cells;
@@ -73,7 +100,7 @@
         "click #reset": "reset",
         "click #next": "next",
         "change #rnd_ghost": "chk_rnd_ghost",
-        "change #mode": "reset"
+        "change #mode": "chg_mode"
       },
       render: function() {
         return this;
@@ -84,7 +111,23 @@
       chk_rnd_ghost: function() {
         var _rule;
         _rule = $("#mode option:selected").html().split("/");
-        if (_rule[2].length && _rule[2] !== " ") this.reset();
+        if (_rule[2].length && _rule[2] !== " ") {
+          this.cellSet = ROUTINES.generateSets(this.num, {
+            ghost: parseInt(_rule[2])
+          });
+          this.reset();
+        }
+        return this;
+      },
+      chg_mode: function() {
+        var _chk_ghost, _ghost, _rule;
+        _rule = $("#mode option:selected").html().split("/");
+        _chk_ghost = !!$("#rnd_ghost").attr("checked");
+        _ghost = _chk_ghost && _rule[2].length && _rule[2] !== " " ? parseInt(_rule[2]) : 0.;
+        this.cellSet = ROUTINES.generateSets(this.num, {
+          ghost: _ghost
+        });
+        this.reset();
         return this;
       },
       reset: function() {

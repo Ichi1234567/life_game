@@ -5,6 +5,7 @@ define([
         position = thisCell.position
         thisCell.lifecycle++
         c_size = _Math.sqrt(num)
+        this_row = _Math.floor(position / c_size)
         delta = [
             1,
             -1,
@@ -17,11 +18,22 @@ define([
         ]
         bedead = 0
         delta.map((delta_i)->
+            abs_delta_i = _Math.abs(delta_i)
+            switch true
+                when (abs_delta_i < 2)
+                    chk_row = 0
+                when (delta_i > 0)
+                    chk_row = 1
+                when (delta_i < 0)
+                    chk_row = -1
+
             nei_pos = position + delta_i
-            cell_nei = current[nei_pos]
-            if (!!cell_nei && cell_nei.type == "role")
-                ghost_i = cell_nei.ghost
-                ((typeof ghost_i == "number" && !ghost_i) && (bedead++))
+            row = _Math.floor(nei_pos / c_size)
+            if ((row - this_row) == chk_row)
+                cell_nei = current[nei_pos]
+                if (!!cell_nei && cell_nei.type == "role")
+                    ghost_i = cell_nei.ghost
+                    ((typeof ghost_i == "number" && !ghost_i) && (bedead++))
         )
         ((thisCell.type == "role") && (bedead--))
 
