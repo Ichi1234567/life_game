@@ -7,6 +7,7 @@ define([
         position = thisCell.position
         thisCell.lifecycle++
         c_size = _Math.sqrt(num)
+        this_row = _Math.floor(position / c_size)
         delta = [
             1,
             -1,
@@ -18,12 +19,23 @@ define([
             (c_size - 1)
         ]
         bedead = 0
-        delta.map((delta_i)->
+        delta.map((delta_i, idx)->
+            abs_delta_i = _Math.abs(delta_i)
+            switch true
+                when (abs_delta_i < 2)
+                    chk_row = 0
+                when (delta_i > 0)
+                    chk_row = 1
+                when (delta_i < 0)
+                    chk_row = -1
+
             nei_pos = position + delta_i
-            cell_nei = current[nei_pos]
-            if (!!cell_nei && cell_nei.type == "role")
-                ghost_i = cell_nei.ghost
-                ((typeof ghost_i == "number" && !ghost_i) && (bedead++))
+            row = _Math.floor(nei_pos / c_size)
+            if ((row - this_row) == chk_row)
+                cell_nei = current[nei_pos]
+                if (!!cell_nei && cell_nei.type == "role")
+                    ghost_i = cell_nei.ghost
+                    ((typeof ghost_i == "number" && !ghost_i) && (bedead++))
         )
         ((thisCell.type == "role") && (bedead--))
 
@@ -300,7 +312,10 @@ define([
             if (!!params.dying)
                 _dying = params.dying
                 _measure_num = _Math.random()
-                (_measure_num > 0.5 && (
+                _const = if (_dying < 10) then ((10 - _dying) * 0.7) else (0)
+                _const = _Math.ceil(_const)
+                base_measure = 0.70 * (1 - (_dying + _const) / 20)
+                (_measure_num > base_measure && (
                     _measure_num = _Math.round(_Math.random() * (_dying - 1) + 1)
                     ((_measure_num) && (
                         @type = "ghost"
