@@ -20,8 +20,7 @@
           _cluster = [
             {
               name: "role",
-              num: 15,
-              dying: 0
+              num: 18
             }
           ];
           _empties = _num;
@@ -72,12 +71,20 @@
       },
       "events": {
         "click #reset": "reset",
-        "click #next": "next"
+        "click #next": "next",
+        "change #rnd_ghost": "chk_rnd_ghost",
+        "change #mode": "reset"
       },
       render: function() {
         return this;
       },
       remove: function() {
+        return this;
+      },
+      chk_rnd_ghost: function() {
+        var _rule;
+        _rule = $("#mode option:selected").html().split("/");
+        if (_rule[2].length && _rule[2] !== " ") this.reset();
         return this;
       },
       reset: function() {
@@ -141,13 +148,16 @@
         return this.current = (_current + 1) % 2;
       },
       set: function(cellset) {
-        var cell_i, cells, i, _dying_const, _num, _rnd, _rule;
+        var cell_i, cells, i, _dying_const, _num, _rnd, _rnd_ghost, _rule;
         _num = this.num;
         _Math = Math;
         cells = [];
+        _rnd_ghost = !!$("#rnd_ghost").attr("checked");
         _rule = $("#mode option:selected").html().split("/");
         _dying_const = 0;
-        if (_rule[2].length && _rule[2] !== " ") _dying_const = parseInt(_rule[2]);
+        if (_rnd_ghost && _rule[2].length && _rule[2] !== " ") {
+          _dying_const = parseInt(_rule[2]);
+        }
         for (i = 0; 0 <= _num ? i < _num : i > _num; 0 <= _num ? i++ : i--) {
           _rnd = _Math.random();
           cell_i = null;

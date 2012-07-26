@@ -21,8 +21,7 @@ define([
             @cellSet = ((_num) ->
                 _cluster = [{ # 以後換成適當的分類rule
                     name: "role",
-                    num : 15,
-                    dying: 0
+                    num : 18
                 }]  # empty, role
                 _empties = _num
                 _cluster.map((set_i) ->
@@ -78,12 +77,20 @@ define([
         "events": {
             "click #reset": "reset"
             "click #next": "next"
+            "change #rnd_ghost": "chk_rnd_ghost"
+            "change #mode": "reset"
         }
         render: () ->
             @
         remove: () ->
             @
 
+
+        chk_rnd_ghost: () ->
+            _rule = $("#mode option:selected").html().split("/")
+            if (_rule[2].length && _rule[2] != " ")
+                @reset()
+            @
 
         reset: () ->
             #console.log("click")
@@ -149,9 +156,10 @@ define([
             _num = @num
             _Math = Math
             cells = []
+            _rnd_ghost = !!$("#rnd_ghost").attr("checked")
             _rule = $("#mode option:selected").html().split("/")
             _dying_const = 0
-            if (_rule[2].length and _rule[2] != " ")
+            if (_rnd_ghost && _rule[2].length and _rule[2] != " ")
                 _dying_const = parseInt(_rule[2])
             for i in [0..._num]
                 _rnd = _Math.random()
