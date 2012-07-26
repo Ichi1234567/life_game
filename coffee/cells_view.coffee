@@ -17,7 +17,7 @@ define([
     ROUTINES = {
         evalSet: (num, ghost_num, opts) ->
             ghost_num = if (ghost_num) then (ghost_num) else (0)
-            _base = 0.30
+            _base = 0.27
             switch ghost_num
                 when (0) then
                 else

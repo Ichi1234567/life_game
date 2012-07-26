@@ -14,7 +14,7 @@
       evalSet: function(num, ghost_num, opts) {
         var _base;
         ghost_num = ghost_num ? ghost_num : 0.;
-        _base = 0.30;
+        _base = 0.27;
         switch (ghost_num) {
           case 0.:
             break;

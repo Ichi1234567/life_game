@@ -306,14 +306,17 @@
       __extends(ROLE, _super);
 
       function ROLE(params) {
-        var _dying, _measure_num;
+        var base_measure, _const, _dying, _measure_num;
         ROLE.__super__.constructor.call(this, params);
         this.type = "role";
         this.speed = "2";
         if (!!params.dying) {
           _dying = params.dying;
           _measure_num = _Math.random();
-          _measure_num > 0.7 && (_measure_num = _Math.round(_Math.random() * (_dying - 1) + 1), _measure_num && (this.type = "ghost", this.ghost = _measure_num));
+          _const = _dying < 10 ? (10 - _dying) * 0.7 : 0.;
+          _const = _Math.ceil(_const);
+          base_measure = 0.70 * (1 - (_dying + _const) / 20);
+          _measure_num > base_measure && (_measure_num = _Math.round(_Math.random() * (_dying - 1) + 1), _measure_num && (this.type = "ghost", this.ghost = _measure_num));
         }
         this;
       }

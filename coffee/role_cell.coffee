@@ -312,7 +312,10 @@ define([
             if (!!params.dying)
                 _dying = params.dying
                 _measure_num = _Math.random()
-                (_measure_num > 0.7 && (
+                _const = if (_dying < 10) then ((10 - _dying) * 0.7) else (0)
+                _const = _Math.ceil(_const)
+                base_measure = 0.70 * (1 - (_dying + _const) / 20)
+                (_measure_num > base_measure && (
                     _measure_num = _Math.round(_Math.random() * (_dying - 1) + 1)
                     ((_measure_num) && (
                         @type = "ghost"

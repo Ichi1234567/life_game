@@ -4,7 +4,7 @@
     var _view;
     return _view = new CELLS_VIEW({
       el: "body",
-      num: 484
+      num: 625
     });
   });
 
