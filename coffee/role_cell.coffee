@@ -180,7 +180,7 @@ define([
 
         (cells[position].type == "ghost" && (
             cells[position].ghost++
-            _stable = _origin_type == "ghost"
+            _stable = false
         ))
 
         (cells[position].ghost == 6 && (
@@ -189,6 +189,7 @@ define([
             })
             _stable = _origin_type == "empty"
         ))
+        console.log(_stable)
         
         {
             cells: cells
@@ -209,7 +210,7 @@ define([
 
         (cells[position].type == "ghost" && (
             cells[position].ghost++
-            _stable = _origin_type == "ghost"
+            _stable = false
         ))
 
         (cells[position].ghost == 17 && (
@@ -237,7 +238,7 @@ define([
 
         (cells[position].type == "ghost" && (
             cells[position].ghost++
-            _stable = _origin_type == "ghost"
+            _stable = false
         ))
 
         (cells[position].ghost == 20 && (
@@ -266,7 +267,7 @@ define([
 
         (cells[position].type == "ghost" && (
             cells[position].ghost++
-            _stable = _origin_type == "ghost"
+            _stable = false
         ))
 
         (cells[position].ghost == 5 && (
@@ -295,7 +296,7 @@ define([
 
         (cells[position].type == "ghost" && (
             cells[position].ghost++
-            _stable = _origin_type == "ghost"
+            _stable = false
         ))
 
         (cells[position].ghost == 4 && (

@@ -188,10 +188,11 @@
         default:
           cells[position].type = "ghost";
       }
-      cells[position].type === "ghost" && (cells[position].ghost++, _stable = _origin_type === "ghost");
+      cells[position].type === "ghost" && (cells[position].ghost++, _stable = false);
       cells[position].ghost === 6 && (cells[position] = new EMPTY({
         position: position
       }), _stable = _origin_type === "empty");
+      console.log(_stable);
       return {
         cells: cells,
         stable: _stable
@@ -215,7 +216,7 @@
         default:
           cells[position].type = "ghost";
       }
-      cells[position].type === "ghost" && (cells[position].ghost++, _stable = _origin_type === "ghost");
+      cells[position].type === "ghost" && (cells[position].ghost++, _stable = false);
       cells[position].ghost === 17 && (cells[position] = new EMPTY({
         position: position
       }), _stable = _origin_type === "empty");
@@ -237,7 +238,7 @@
         default:
           cells[position].type = "ghost";
       }
-      cells[position].type === "ghost" && (cells[position].ghost++, _stable = _origin_type === "ghost");
+      cells[position].type === "ghost" && (cells[position].ghost++, _stable = false);
       cells[position].ghost === 20 && (cells[position] = new EMPTY({
         position: position
       }), _stable = _origin_type === "empty");
@@ -262,7 +263,7 @@
         default:
           cells[position].type = "ghost";
       }
-      cells[position].type === "ghost" && (cells[position].ghost++, _stable = _origin_type === "ghost");
+      cells[position].type === "ghost" && (cells[position].ghost++, _stable = false);
       cells[position].ghost === 5 && (cells[position] = new EMPTY({
         position: position
       }), _stable = _origin_type === "empty");
@@ -284,7 +285,7 @@
         default:
           cells[position].type = "ghost";
       }
-      cells[position].type === "ghost" && (cells[position].ghost++, _stable = _origin_type === "ghost");
+      cells[position].type === "ghost" && (cells[position].ghost++, _stable = false);
       cells[position].ghost === 4 && (cells[position] = new EMPTY({
         position: position
       }), _stable = _origin_type === "empty");
