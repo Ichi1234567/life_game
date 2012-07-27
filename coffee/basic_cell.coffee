@@ -47,6 +47,7 @@ define([
         bedead = chkbyNei(thisCell, current, cells, opts.num)
         ROLE = opts.ROLE
         _origin_type = thisCell.type
+        _stable = true
         switch (bedead)
             when (3), (6)
                 _stable = _origin_type == "role"
@@ -64,6 +65,7 @@ define([
         bedead = chkbyNei(thisCell, current, cells, opts.num)
         ROLE = opts.ROLE
         _origin_type = thisCell.type
+        _stable = true
         switch (bedead)
             when (3)
                 _stable = _origin_type == "role"
@@ -84,6 +86,7 @@ define([
         bedead = chkbyNei(thisCell, current, cells, opts.num)
         ROLE = opts.ROLE
         _origin_type = thisCell.type
+        _stable = true
         switch (bedead)
             when (1), (3), (5), (7)
                 _stable = _origin_type == "role"
@@ -101,6 +104,7 @@ define([
         bedead = chkbyNei(thisCell, current, cells, opts.num)
         ROLE = opts.ROLE
         _origin_type = thisCell.type
+        _stable = true
         switch (bedead)
             when (2)
                 _stable = _origin_type == "role"
@@ -124,6 +128,7 @@ define([
         bedead = chkbyNei(thisCell, current, cells, opts.num)
         ROLE = opts.ROLE
         _origin_type = thisCell.type
+        _stable = true
         switch (bedead)
             when (3), (4), (5), (7)
                 _stable = (_origin_type == "role") && (!thisCell.ghost)
@@ -141,6 +146,7 @@ define([
         bedead = chkbyNei(thisCell, current, cells, opts.num)
         ROLE = opts.ROLE
         _origin_type = thisCell.type
+        _stable = true
         switch (bedead)
             when (3), (6)
                 _stable = (_origin_type == "role") && (!thisCell.ghost)
@@ -159,6 +165,7 @@ define([
         bedead = chkbyNei(thisCell, current, cells, opts.num)
         ROLE = opts.ROLE
         _origin_type = thisCell.type
+        _stable = true
         switch (bedead)
             when (1), (3)
                 _stable = (_origin_type == "role") && (!thisCell.ghost)
@@ -177,6 +184,7 @@ define([
         bedead = chkbyNei(thisCell, current, cells, opts.num)
         ROLE = opts.ROLE
         _origin_type = thisCell.type
+        _stable = true
         switch (bedead)
             when (2), (6), (7), (8)
                 _stable = (_origin_type == "role") && (!thisCell.ghost)
@@ -195,6 +203,7 @@ define([
         bedead = chkbyNei(thisCell, current, cells, opts.num)
         ROLE = opts.ROLE
         _origin_type = thisCell.type
+        _stable = true
         switch (bedead)
             when (2), (3), (4)
                 _stable = (_origin_type == "role") && (!thisCell.ghost)
@@ -269,6 +278,7 @@ define([
                     stable: true
                 }
             result = _rule[mode](@, current, cells, opts)
+            result
     })
 
     MODEL

@@ -43,6 +43,7 @@
       bedead = chkbyNei(thisCell, current, cells, opts.num);
       ROLE = opts.ROLE;
       _origin_type = thisCell.type;
+      _stable = true;
       switch (bedead) {
         case 3.:
         case 6.:
@@ -62,6 +63,7 @@
       bedead = chkbyNei(thisCell, current, cells, opts.num);
       ROLE = opts.ROLE;
       _origin_type = thisCell.type;
+      _stable = true;
       switch (bedead) {
         case 3.:
           _stable = _origin_type === "role";
@@ -82,6 +84,7 @@
       bedead = chkbyNei(thisCell, current, cells, opts.num);
       ROLE = opts.ROLE;
       _origin_type = thisCell.type;
+      _stable = true;
       switch (bedead) {
         case 1.:
         case 3.:
@@ -103,6 +106,7 @@
       bedead = chkbyNei(thisCell, current, cells, opts.num);
       ROLE = opts.ROLE;
       _origin_type = thisCell.type;
+      _stable = true;
       switch (bedead) {
         case 2.:
           _stable = _origin_type === "role";
@@ -122,6 +126,7 @@
       bedead = chkbyNei(thisCell, current, cells, opts.num);
       ROLE = opts.ROLE;
       _origin_type = thisCell.type;
+      _stable = true;
       switch (bedead) {
         case 3.:
         case 4.:
@@ -143,6 +148,7 @@
       bedead = chkbyNei(thisCell, current, cells, opts.num);
       ROLE = opts.ROLE;
       _origin_type = thisCell.type;
+      _stable = true;
       switch (bedead) {
         case 3.:
         case 6.:
@@ -162,6 +168,7 @@
       bedead = chkbyNei(thisCell, current, cells, opts.num);
       ROLE = opts.ROLE;
       _origin_type = thisCell.type;
+      _stable = true;
       switch (bedead) {
         case 1.:
         case 3.:
@@ -181,6 +188,7 @@
       bedead = chkbyNei(thisCell, current, cells, opts.num);
       ROLE = opts.ROLE;
       _origin_type = thisCell.type;
+      _stable = true;
       switch (bedead) {
         case 2.:
         case 6.:
@@ -202,6 +210,7 @@
       bedead = chkbyNei(thisCell, current, cells, opts.num);
       ROLE = opts.ROLE;
       _origin_type = thisCell.type;
+      _stable = true;
       switch (bedead) {
         case 2.:
         case 3.:
@@ -269,7 +278,8 @@
             stable: true
           };
         }
-        return result = _rule[mode](this, current, cells, opts);
+        result = _rule[mode](this, current, cells, opts);
+        return result;
       }
     });
     return MODEL;
