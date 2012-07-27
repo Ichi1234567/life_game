@@ -54,10 +54,10 @@ define([
         switch (bedead)
             when (1), (2), (5) then
             else
-                _stable = _origin_type == "empty"
                 cells[position] = new EMPTY({
                     position: position
                 })
+                _stable = _origin_type == "empty"
         
         {
             cells: cells
@@ -189,7 +189,6 @@ define([
             })
             _stable = _origin_type == "empty"
         ))
-        console.log(_stable)
         
         {
             cells: cells

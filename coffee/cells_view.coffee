@@ -14,6 +14,8 @@ define([
         enemy: ENEMY
     }
     global_timmer = null
+    global_count = 0
+    prev_status = null
 
     window.requestAnimationFrame = (() ->
         (
@@ -174,6 +176,7 @@ define([
 
         reset: () ->
             #console.log("click")
+            global_count = 0
             @cells = @set(@cellSet)
             _num = @num
             _cells = @cells
@@ -219,7 +222,6 @@ define([
             @cells = _cells
             _w = @w
             _h = @h
-            #console.log(_stable)
             @saveWorker.postMessage(@cells)
             _state = @state
             if (!_stable)
@@ -230,7 +232,16 @@ define([
                     true
                 )
             @current = (_current + 1) % 2
-            (_stable && ($("#auto-run").trigger("click")))
+            if (_stable && _stable == prev_status)
+                global_count++
+            else
+                global_count = 0
+                prev_status = null
+            ((global_count == 3) && (
+                $("#auto-run").trigger("click")
+                global_count = 0
+                prev_status = null
+            ))
                         
             _stable
 

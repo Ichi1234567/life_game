@@ -29,116 +29,70 @@
   stroke-width: 1.5px; }
 
 .role {
-  fill: steelblue;
-  stroke: black;
-  stroke-width: 1.5px; }
+  fill: steelblue; }
 
 .empty {
-  fill: white;
-  stroke: black;
-  stroke-width: 1.5px; }
+  fill: white; }
 
 .ghost0 {
-  fill: #000000;
-  stroke: black;
-  stroke-width: 1.5px; }
+  fill: #000000; }
 
 .ghost1 {
-  fill: #250038;
-  stroke: black;
-  stroke-width: 1.5px; }
+  fill: #250038; }
 
 .ghost2 {
-  fill: #360052;
-  stroke: black;
-  stroke-width: 1.5px; }
+  fill: #360052; }
 
 .ghost3 {
-  fill: #49006E;
-  stroke: black;
-  stroke-width: 1.5px; }
+  fill: #49006E; }
 
 .ghost4 {
-  fill: #5A0087;
-  stroke: black;
-  stroke-width: 1.5px; }
+  fill: #5A0087; }
 
 .ghost5 {
-  fill: #68009C;
-  stroke: black;
-  stroke-width: 1.5px; }
+  fill: #68009C; }
 
 .ghost6 {
-  fill: #7400AD;
-  stroke: black;
-  stroke-width: 1.5px; }
+  fill: #7400AD; }
 
 .ghost7 {
-  fill: #8B00D1;
-  stroke: black;
-  stroke-width: 1.5px; }
+  fill: #8B00D1; }
 
 .ghost8 {
-  fill: #A113E8;
-  stroke: black;
-  stroke-width: 1.5px; }
+  fill: #A113E8; }
 
 .ghost9 {
-  fill: #B423FC;
-  stroke: black;
-  stroke-width: 1.5px; }
+  fill: #B423FC; }
 
 .ghost10 {
-  fill: #BC36FF;
-  stroke: black;
-  stroke-width: 1.5px; }
+  fill: #BC36FF; }
 
 .ghost11 {
-  fill: #C145FF;
-  stroke: black;
-  stroke-width: 1.5px; }
+  fill: #C145FF; }
 
 .ghost12 {
-  fill: #CA61FF;
-  stroke: black;
-  stroke-width: 1.5px; }
+  fill: #CA61FF; }
 
 .ghost13 {
-  fill: #CF70FF;
-  stroke: black;
-  stroke-width: 1.5px; }
+  fill: #CF70FF; }
 
 .ghost14 {
-  fill: #D685FF;
-  stroke: black;
-  stroke-width: 1.5px; }
+  fill: #D685FF; }
 
 .ghost15 {
-  fill: #DC96FF;
-  stroke: black;
-  stroke-width: 1.5px; }
+  fill: #DC96FF; }
 
 .ghost16 {
-  fill: #E2A8FF;
-  stroke: black;
-  stroke-width: 1.5px; }
+  fill: #E2A8FF; }
 
 .ghost17 {
-  fill: #E6B5FF;
-  stroke: black;
-  stroke-width: 1.5px; }
+  fill: #E6B5FF; }
 
 .ghost18 {
-  fill: #EBC2FF;
-  stroke: black;
-  stroke-width: 1.5px; }
+  fill: #EBC2FF; }
 
 .ghost19 {
-  fill: #F1D6FF;
-  stroke: black;
-  stroke-width: 1.5px; }
+  fill: #F1D6FF; }
 
 .ghost20 {
-  fill: #F8EBFF;
-  stroke: black;
-  stroke-width: 1.5px; }
+  fill: #F8EBFF; }

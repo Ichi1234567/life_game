@@ -53,10 +53,10 @@
         case 5.:
           break;
         default:
-          _stable = _origin_type === "empty";
           cells[position] = new EMPTY({
             position: position
           });
+          _stable = _origin_type === "empty";
       }
       return {
         cells: cells,
@@ -192,7 +192,6 @@
       cells[position].ghost === 6 && (cells[position] = new EMPTY({
         position: position
       }), _stable = _origin_type === "empty");
-      console.log(_stable);
       return {
         cells: cells,
         stable: _stable

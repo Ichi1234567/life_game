@@ -1,7 +1,7 @@
 (function() {
 
   define(["basic_cell", "role_cell", "food_cell", "enemy_cell", "display"], function(BASIC, ROLE, FOOD, ENEMY, DISPLAY) {
-    var ROUTINES, SCENE, cell_model, global_timmer, _Math;
+    var ROUTINES, SCENE, cell_model, global_count, global_timmer, prev_status, _Math;
     console.log("cells_view");
     _Math = Math;
     cell_model = {
@@ -11,6 +11,8 @@
       enemy: ENEMY
     };
     global_timmer = null;
+    global_count = 0;
+    prev_status = null;
     window.requestAnimationFrame = (function() {
       return window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function(callback, element) {
         return window.setTimeout(callback, 1000 / 60);
@@ -168,6 +170,7 @@
       },
       reset: function() {
         var _cells, _current, _h, _num, _w;
+        global_count = 0;
         this.cells = this.set(this.cellSet);
         _num = this.num;
         _cells = this.cells;
@@ -225,7 +228,13 @@
           });
         }
         this.current = (_current + 1) % 2;
-        _stable && ($("#auto-run").trigger("click"));
+        if (_stable && _stable === prev_status) {
+          global_count++;
+        } else {
+          global_count = 0;
+          prev_status = null;
+        }
+        (global_count === 3) && ($("#auto-run").trigger("click"), global_count = 0, prev_status = null);
         return _stable;
       },
       set: function(cellset) {

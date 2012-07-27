@@ -50,10 +50,10 @@ define([
         _stable = true
         switch (bedead)
             when (3), (6)
-                _stable = _origin_type == "role"
                 cells[position] = new ROLE({
                     position: position
                 })
+                _stable = _origin_type == "role"
         
         {
             cells: cells

@@ -47,10 +47,10 @@
       switch (bedead) {
         case 3.:
         case 6.:
-          _stable = _origin_type === "role";
           cells[position] = new ROLE({
             position: position
           });
+          _stable = _origin_type === "role";
       }
       return {
         cells: cells,
