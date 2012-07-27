@@ -208,7 +208,7 @@
         return this;
       },
       next: function() {
-        var cells, i, mode, result, _cells, _current, _h, _is_auto_reset, _num, _stable, _state, _w;
+        var cells, i, mode, result, _cells, _current, _h, _is_auto_reset, _num, _stable, _state, _view, _w;
         _current = this.current;
         _cells = this.cells;
         _num = this.num;
@@ -249,7 +249,7 @@
           global_count = 0;
           prev_status = null;
         }
-        (global_count === 3) && (global_count = 0, prev_status = null, _is_auto_reset = $("#auto-reset").attr("checked"), _is_auto_reset && this.reset(), !_is_auto_reset && $("#auto-run").trigger("click"));
+        (global_count === 3) && (global_count = 0, prev_status = null, _is_auto_reset = !!$("#auto-reset").attr("checked"), _view = this, _is_auto_reset && _view.reset(), !_is_auto_reset && $("#auto-run").trigger("click"));
         return _stable;
       },
       set: function(cellset) {
