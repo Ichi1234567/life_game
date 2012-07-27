@@ -112,7 +112,7 @@
         return this;
       },
       "events": {
-        "click #reset": "reset",
+        "click #reset": "click_reset",
         "click #next": "next",
         "click #auto-run": "auto_run",
         "change #rnd_ghost": "chk_rnd_ghost",
@@ -172,20 +172,26 @@
         return this;
       },
       chg_mode: function() {
-        var _chk_ghost, _ghost, _rule;
+        var _chk_ghost, _ghost, _is_auto_run, _rule;
         _rule = $("#mode option:selected").html().split("/");
         _chk_ghost = !!$("#rnd_ghost").attr("checked");
         _ghost = _chk_ghost && _rule[2].length && _rule[2] !== " " ? parseInt(_rule[2]) : 0.;
         this.cellSet = ROUTINES.generateSets(this.num, {
           ghost: _ghost
         });
+        _is_auto_run = $("#auto-run").attr("class") === "running";
+        _is_auto_run && $("#auto-run").trigger("click");
         this.reset();
         return this;
       },
-      reset: function() {
-        var _cells, _current, _h, _is_auto_run, _num, _w;
+      click_reset: function() {
+        var _is_auto_run;
         _is_auto_run = $("#auto-run").attr("class") === "running";
         _is_auto_run && $("#auto-run").trigger("click");
+        return this.reset();
+      },
+      reset: function() {
+        var _cells, _current, _h, _num, _w;
         global_count = 0;
         this.cells = this.set(this.cellSet);
         _num = this.num;

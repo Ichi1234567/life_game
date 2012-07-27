@@ -125,7 +125,7 @@ define([
             _saveWorker.postMessage(@cells)
             @
         "events": {
-            "click #reset": "reset"
+            "click #reset": "click_reset"
             "click #next": "next"
             "click #auto-run": "auto_run"
             "change #rnd_ghost": "chk_rnd_ghost"
@@ -184,13 +184,17 @@ define([
             @cellSet = ROUTINES.generateSets(@num, {
                 ghost: _ghost
             })
+            _is_auto_run = $("#auto-run").attr("class") == "running"
+            (_is_auto_run && $("#auto-run").trigger("click"))
             @reset()
             @
+        click_reset: () ->
+            _is_auto_run = $("#auto-run").attr("class") == "running"
+            (_is_auto_run && $("#auto-run").trigger("click"))
+            @reset()
 
         reset: () ->
             #console.log("click")
-            _is_auto_run = $("#auto-run").attr("class") == "running"
-            (_is_auto_run && $("#auto-run").trigger("click"))
             global_count = 0
             @cells = @set(@cellSet)
             _num = @num
