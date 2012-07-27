@@ -252,9 +252,11 @@ define([
                 global_count = 0
                 prev_status = null
             ((global_count == 3) && (
-                $("#auto-run").trigger("click")
                 global_count = 0
                 prev_status = null
+                _is_auto_reset = $("#auto-reset").attr("checked")
+                (_is_auto_reset && @reset())
+                (!_is_auto_reset && $("#auto-run").trigger("click"))
             ))
                         
             _stable
