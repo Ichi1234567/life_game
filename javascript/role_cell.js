@@ -161,7 +161,7 @@
       bedead = chkbyNei(thisCell, current, cells, opts.num);
       EMPTY = opts.EMPTY;
       _origin_type = thisCell.type;
-      _stable = _origin_type === "ghost";
+      _stable = true;
       cells[position].type = "ghost";
       cells[position].ghost++;
       cells[position].ghost === 2 && (_stable = _origin_type === "empty", cells[position] = new EMPTY({

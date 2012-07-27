@@ -1,7 +1,7 @@
 (function() {
 
   define(["basic_cell", "role_cell", "food_cell", "enemy_cell", "display"], function(BASIC, ROLE, FOOD, ENEMY, DISPLAY) {
-    var ROUTINES, SCENE, cell_model, global_count, global_timmer, prev_status, _Math;
+    var Fps, Frames, LastTime, ROUTINES, SCENE, UpdateTime, cell_model, global_count, global_timmer, prev_status, _Math;
     console.log("cells_view");
     _Math = Math;
     cell_model = {
@@ -13,6 +13,10 @@
     global_timmer = null;
     global_count = 0;
     prev_status = null;
+    Frames = 0;
+    UpdateTime = 1000;
+    LastTime = new Date();
+    Fps = 0;
     window.requestAnimationFrame = (function() {
       return window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function(callback, element) {
         return window.setTimeout(callback, 1000 / 60);
@@ -121,7 +125,7 @@
         return this;
       },
       auto_run: function(e, status) {
-        var _$target, _running, _stable, _view;
+        var curr_time, dt, _$target, _fps, _running, _stable, _view;
         _$target = $(e.target);
         if (!status) {
           _running = !!(_$target.attr("class"));
@@ -143,6 +147,16 @@
           _$target.html("auto-run");
           cancelRequestAnimFrame(global_timmer);
           global_timmer = null;
+        } else {
+          curr_time = new Date();
+          Frames++;
+          dt = curr_time.getTime() - LastTime.getTime();
+          if (dt > UpdateTime) {
+            _fps = _Math.round((Frames / dt) * UpdateTime);
+            Frames = 0;
+            LastTime = curr_time;
+            $("#fps").html(_fps);
+          }
         }
         return this;
       },
@@ -169,7 +183,9 @@
         return this;
       },
       reset: function() {
-        var _cells, _current, _h, _num, _w;
+        var _cells, _current, _h, _is_auto_run, _num, _w;
+        _is_auto_run = $("#auto-run").attr("class") === "running";
+        _is_auto_run && $("#auto-run").trigger("click");
         global_count = 0;
         this.cells = this.set(this.cellSet);
         _num = this.num;
@@ -194,7 +210,7 @@
         return this;
       },
       next: function() {
-        var cells, i, mode, result, _cells, _current, _h, _num, _stable, _state, _w;
+        var cells, i, mode, result, _cells, _current, _h, _is_auto_reset, _localTime, _num, _stable, _state, _view, _w;
         _current = this.current;
         _cells = this.cells;
         _num = this.num;
@@ -228,13 +244,14 @@
           });
         }
         this.current = (_current + 1) % 2;
+        _stable && !prev_status && (prev_status = _stable);
         if (_stable && _stable === prev_status) {
           global_count++;
         } else {
           global_count = 0;
           prev_status = null;
         }
-        (global_count === 3) && ($("#auto-run").trigger("click"), global_count = 0, prev_status = null);
+        (global_count === 10) && (global_count = 0, prev_status = null, _is_auto_reset = !!$("#auto-reset").attr("checked"), _view = this, _is_auto_reset && _view.reset(), _localTime = null, !_is_auto_reset && $("#auto-run").trigger("click"));
         return _stable;
       },
       set: function(cellset) {

@@ -16,6 +16,10 @@ define([
     global_timmer = null
     global_count = 0
     prev_status = null
+    Frames = 0
+    UpdateTime = 1000
+    LastTime = new Date()
+    Fps = 0
 
     window.requestAnimationFrame = (() ->
         (
@@ -155,6 +159,15 @@ define([
                 _$target.html("auto-run")
                 cancelRequestAnimFrame(global_timmer)
                 global_timmer = null
+            else
+                curr_time = new Date()
+                Frames++
+                dt = curr_time.getTime() - LastTime.getTime()
+                if (dt > UpdateTime)
+                    _fps = _Math.round((Frames/dt) * UpdateTime)
+                    Frames = 0
+                    LastTime = curr_time
+                    $("#fps").html(_fps)
             @
         chk_rnd_ghost: () ->
             _rule = $("#mode option:selected").html().split("/")
@@ -176,6 +189,8 @@ define([
 
         reset: () ->
             #console.log("click")
+            _is_auto_run = $("#auto-run").attr("class") == "running"
+            (_is_auto_run && $("#auto-run").trigger("click"))
             global_count = 0
             @cells = @set(@cellSet)
             _num = @num
@@ -232,15 +247,20 @@ define([
                     true
                 )
             @current = (_current + 1) % 2
+            (_stable && !prev_status && (prev_status = _stable))
             if (_stable && _stable == prev_status)
                 global_count++
             else
                 global_count = 0
                 prev_status = null
-            ((global_count == 3) && (
-                $("#auto-run").trigger("click")
+            ((global_count == 10) && (
                 global_count = 0
                 prev_status = null
+                _is_auto_reset = !!$("#auto-reset").attr("checked")
+                _view = @
+                (_is_auto_reset && _view.reset())
+                _localTime = null
+                (!_is_auto_reset && $("#auto-run").trigger("click"))
             ))
                         
             _stable
