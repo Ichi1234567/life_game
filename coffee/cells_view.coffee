@@ -232,6 +232,7 @@ define([
                     true
                 )
             @current = (_current + 1) % 2
+            (_stable && !prev_status && (prev_status = _stable))
             if (_stable && _stable == prev_status)
                 global_count++
             else
