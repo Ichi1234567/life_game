@@ -46,17 +46,17 @@
       bedead = chkbyNei(thisCell, current, cells, opts.num);
       EMPTY = opts.EMPTY;
       _origin_type = thisCell.type;
+      _stable = true;
       switch (bedead) {
         case 1.:
         case 2.:
         case 5.:
-          _stable = true;
           break;
         default:
-          _stable = _origin_type === "empty";
           cells[position] = new EMPTY({
             position: position
           });
+          _stable = _origin_type === "empty";
       }
       return {
         cells: cells,
@@ -69,10 +69,10 @@
       bedead = chkbyNei(thisCell, current, cells, opts.num);
       EMPTY = opts.EMPTY;
       _origin_type = thisCell.type;
+      _stable = true;
       switch (bedead) {
         case 2.:
         case 3.:
-          _stable = true;
           break;
         default:
           _stable = _origin_type === "empty";
@@ -97,13 +97,13 @@
       bedead = chkbyNei(thisCell, current, cells, opts.num);
       EMPTY = opts.EMPTY;
       _origin_type = thisCell.type;
+      _stable = true;
       switch (bedead) {
         case 1.:
         case 2.:
         case 3.:
         case 4.:
         case 5.:
-          _stable = true;
           break;
         default:
           _stable = _origin_type === "empty";
@@ -122,12 +122,12 @@
       bedead = chkbyNei(thisCell, current, cells, opts.num);
       EMPTY = opts.EMPTY;
       _origin_type = thisCell.type;
+      _stable = true;
       switch (bedead) {
         case 1.:
         case 3.:
         case 5.:
         case 7.:
-          _stable = true;
           break;
         default:
           _stable = _origin_type === "empty";
@@ -156,27 +156,29 @@
       };
     };
     _brainbrain = function(thisCell, current, cells, opts) {
-      var EMPTY, bedead, position, _origin_type;
+      var EMPTY, bedead, position, _origin_type, _stable;
       position = thisCell.position;
       bedead = chkbyNei(thisCell, current, cells, opts.num);
       EMPTY = opts.EMPTY;
       _origin_type = thisCell.type;
+      _stable = _origin_type === "ghost";
       cells[position].type = "ghost";
       cells[position].ghost++;
-      cells[position].ghost === 2 && (cells[position] = new EMPTY({
+      cells[position].ghost === 2 && (_stable = _origin_type === "empty", cells[position] = new EMPTY({
         position: position
       }));
       return {
         cells: cells,
-        stable: false
+        stable: _stable
       };
     };
     _banners = function(thisCell, current, cells, opts) {
-      var EMPTY, bedead, position, _origin_type;
+      var EMPTY, bedead, position, _origin_type, _stable;
       position = thisCell.position;
       bedead = chkbyNei(thisCell, current, cells, opts.num);
       EMPTY = opts.EMPTY;
       _origin_type = thisCell.type;
+      _stable = true;
       switch (bedead) {
         case 2.:
         case 3.:
@@ -186,21 +188,22 @@
         default:
           cells[position].type = "ghost";
       }
-      cells[position].type === "ghost" && (cells[position].ghost++);
+      cells[position].type === "ghost" && (cells[position].ghost++, _stable = false);
       cells[position].ghost === 6 && (cells[position] = new EMPTY({
         position: position
-      }));
+      }), _stable = _origin_type === "empty");
       return {
         cells: cells,
-        stable: false
+        stable: _stable
       };
     };
     _ebbflow = function(thisCell, current, cells, opts) {
-      var EMPTY, bedead, position, _origin_type;
+      var EMPTY, bedead, position, _origin_type, _stable;
       position = thisCell.position;
       bedead = chkbyNei(thisCell, current, cells, opts.num);
       EMPTY = opts.EMPTY;
       _origin_type = thisCell.type;
+      _stable = true;
       switch (bedead) {
         case 0.:
         case 1.:
@@ -212,42 +215,44 @@
         default:
           cells[position].type = "ghost";
       }
-      cells[position].type === "ghost" && (cells[position].ghost++);
+      cells[position].type === "ghost" && (cells[position].ghost++, _stable = false);
       cells[position].ghost === 17 && (cells[position] = new EMPTY({
         position: position
-      }));
+      }), _stable = _origin_type === "empty");
       return {
         cells: cells,
-        stable: false
+        stable: _stable
       };
     };
     _fireworks = function(thisCell, current, cells, opts) {
-      var EMPTY, bedead, position, _origin_type;
+      var EMPTY, bedead, position, _origin_type, _stable;
       position = thisCell.position;
       bedead = chkbyNei(thisCell, current, cells, opts.num);
       EMPTY = opts.EMPTY;
       _origin_type = thisCell.type;
+      _stable = true;
       switch (bedead) {
         case 2.:
           break;
         default:
           cells[position].type = "ghost";
       }
-      cells[position].type === "ghost" && (cells[position].ghost++);
+      cells[position].type === "ghost" && (cells[position].ghost++, _stable = false);
       cells[position].ghost === 20 && (cells[position] = new EMPTY({
         position: position
-      }));
+      }), _stable = _origin_type === "empty");
       return {
         cells: cells,
-        stable: false
+        stable: _stable
       };
     };
     _rake = function(thisCell, current, cells, opts) {
-      var EMPTY, bedead, position, _origin_type;
+      var EMPTY, bedead, position, _origin_type, _stable;
       position = thisCell.position;
       bedead = chkbyNei(thisCell, current, cells, opts.num);
       EMPTY = opts.EMPTY;
       _origin_type = thisCell.type;
+      _stable = true;
       switch (bedead) {
         case 3.:
         case 4.:
@@ -257,34 +262,35 @@
         default:
           cells[position].type = "ghost";
       }
-      cells[position].type === "ghost" && (cells[position].ghost++);
+      cells[position].type === "ghost" && (cells[position].ghost++, _stable = false);
       cells[position].ghost === 5 && (cells[position] = new EMPTY({
         position: position
-      }));
+      }), _stable = _origin_type === "empty");
       return {
         cells: cells,
-        stable: false
+        stable: _stable
       };
     };
     _spirals = function(thisCell, current, cells, opts) {
-      var EMPTY, bedead, position, _origin_type;
+      var EMPTY, bedead, position, _origin_type, _stable;
       position = thisCell.position;
       bedead = chkbyNei(thisCell, current, cells, opts.num);
       EMPTY = opts.EMPTY;
       _origin_type = thisCell.type;
+      _stable = true;
       switch (bedead) {
         case 2.:
           break;
         default:
           cells[position].type = "ghost";
       }
-      cells[position].type === "ghost" && (cells[position].ghost++);
+      cells[position].type === "ghost" && (cells[position].ghost++, _stable = false);
       cells[position].ghost === 4 && (cells[position] = new EMPTY({
         position: position
-      }));
+      }), _stable = _origin_type === "empty");
       return {
         cells: cells,
-        stable: false
+        stable: _stable
       };
     };
     RULE = {
@@ -313,9 +319,8 @@
         if (!!params.dying) {
           _dying = params.dying;
           _measure_num = _Math.random();
-          _const = _dying < 10 ? (10 - _dying) * 0.7 : 0.;
-          _const = _Math.ceil(_const);
-          base_measure = 0.70 * (1 - (_dying + _const) / 20);
+          _const = _dying < 10 ? (100 - _dying * _dying) / 1000 : -_dying * _dying / 10000;
+          base_measure = 0.70 * (1 - _dying / 20 - _const);
           _measure_num > base_measure && (_measure_num = _Math.round(_Math.random() * (_dying - 1) + 1), _measure_num && (this.type = "ghost", this.ghost = _measure_num));
         }
         this;

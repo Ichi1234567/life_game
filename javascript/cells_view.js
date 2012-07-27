@@ -1,7 +1,7 @@
 (function() {
 
   define(["basic_cell", "role_cell", "food_cell", "enemy_cell", "display"], function(BASIC, ROLE, FOOD, ENEMY, DISPLAY) {
-    var ROUTINES, SCENE, cell_model, _Math;
+    var ROUTINES, SCENE, cell_model, global_count, global_timmer, prev_status, _Math;
     console.log("cells_view");
     _Math = Math;
     cell_model = {
@@ -10,6 +10,17 @@
       food: FOOD,
       enemy: ENEMY
     };
+    global_timmer = null;
+    global_count = 0;
+    prev_status = null;
+    window.requestAnimationFrame = (function() {
+      return window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function(callback, element) {
+        return window.setTimeout(callback, 1000 / 60);
+      };
+    })();
+    window.cancelRequestAnimFrame = (function() {
+      return window.cancelAnimationFrame || window.webkitCancelRequestAnimationFrame || window.mozCancelRequestAnimationFrame || window.oCancelRequestAnimationFrame || window.msCancelRequestAnimationFrame || clearTimeout;
+    })();
     ROUTINES = {
       evalSet: function(num, ghost_num, opts) {
         var _base;
@@ -99,6 +110,7 @@
       "events": {
         "click #reset": "reset",
         "click #next": "next",
+        "click #auto-run": "auto_run",
         "change #rnd_ghost": "chk_rnd_ghost",
         "change #mode": "chg_mode"
       },
@@ -106,6 +118,32 @@
         return this;
       },
       remove: function() {
+        return this;
+      },
+      auto_run: function(e, status) {
+        var _$target, _running, _stable, _view;
+        _$target = $(e.target);
+        if (!status) {
+          _running = !!(_$target.attr("class"));
+          _$target.toggleClass("running");
+        }
+        _view = this;
+        if (_running && !status) {
+          _stable = true;
+        } else {
+          _$target.html("stop");
+          _stable = false;
+          global_timmer && cancelRequestAnimFrame(global_timmer);
+          global_timmer = requestAnimationFrame(function() {
+            _view.auto_run(e, true);
+            return _stable = _view.next();
+          });
+        }
+        if (_stable) {
+          _$target.html("auto-run");
+          cancelRequestAnimFrame(global_timmer);
+          global_timmer = null;
+        }
         return this;
       },
       chk_rnd_ghost: function() {
@@ -132,6 +170,7 @@
       },
       reset: function() {
         var _cells, _current, _h, _num, _w;
+        global_count = 0;
         this.cells = this.set(this.cellSet);
         _num = this.num;
         _cells = this.cells;
@@ -188,7 +227,15 @@
             return true;
           });
         }
-        return this.current = (_current + 1) % 2;
+        this.current = (_current + 1) % 2;
+        if (_stable && _stable === prev_status) {
+          global_count++;
+        } else {
+          global_count = 0;
+          prev_status = null;
+        }
+        (global_count === 3) && ($("#auto-run").trigger("click"), global_count = 0, prev_status = null);
+        return _stable;
       },
       set: function(cellset) {
         var cell_i, cells, i, _dying_const, _num, _rnd, _rnd_ghost, _rule;

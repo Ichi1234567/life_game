@@ -50,14 +50,14 @@ define([
         bedead = chkbyNei(thisCell, current, cells, opts.num)
         EMPTY = opts.EMPTY
         _origin_type = thisCell.type
+        _stable = true
         switch (bedead)
-            when (1), (2), (5)
-                _stable = true
+            when (1), (2), (5) then
             else
-                _stable = _origin_type == "empty"
                 cells[position] = new EMPTY({
                     position: position
                 })
+                _stable = _origin_type == "empty"
         
         {
             cells: cells
@@ -69,9 +69,9 @@ define([
         bedead = chkbyNei(thisCell, current, cells, opts.num)
         EMPTY = opts.EMPTY
         _origin_type = thisCell.type
+        _stable = true
         switch (bedead)
-            when (2), (3)
-                _stable = true
+            when (2), (3) then
             else
                 _stable = _origin_type == "empty"
                 cells[position] = new EMPTY({
@@ -94,9 +94,9 @@ define([
         bedead = chkbyNei(thisCell, current, cells, opts.num)
         EMPTY = opts.EMPTY
         _origin_type = thisCell.type
+        _stable = true
         switch (bedead)
-            when (1), (2), (3), (4), (5)
-                _stable = true
+            when (1), (2), (3), (4), (5) then
             else
                 _stable = _origin_type == "empty"
                 cells[position] = new EMPTY({
@@ -113,9 +113,9 @@ define([
         bedead = chkbyNei(thisCell, current, cells, opts.num)
         EMPTY = opts.EMPTY
         _origin_type = thisCell.type
+        _stable = true
         switch (bedead)
-            when (1), (3), (5), (7)
-                _stable = true
+            when (1), (3), (5), (7) then
             else
                 _stable = _origin_type == "empty"
                 cells[position] = new EMPTY({
@@ -151,9 +151,11 @@ define([
         bedead = chkbyNei(thisCell, current, cells, opts.num)
         EMPTY = opts.EMPTY
         _origin_type = thisCell.type
+        _stable = _origin_type == "ghost"
         cells[position].type = "ghost"
         cells[position].ghost++
         (cells[position].ghost == 2 && (
+            _stable = _origin_type == "empty"
             cells[position] = new EMPTY({
             position: position
             })
@@ -161,7 +163,7 @@ define([
         
         {
             cells: cells
-            stable: false
+            stable: _stable
         }
 
 
@@ -170,22 +172,27 @@ define([
         bedead = chkbyNei(thisCell, current, cells, opts.num)
         EMPTY = opts.EMPTY
         _origin_type = thisCell.type
+        _stable = true
         switch (bedead)
             when (2), (3), (6), (7) then
             else
                 cells[position].type = "ghost"
 
-        (cells[position].type == "ghost" && (cells[position].ghost++))
+        (cells[position].type == "ghost" && (
+            cells[position].ghost++
+            _stable = false
+        ))
 
         (cells[position].ghost == 6 && (
             cells[position] = new EMPTY({
             position: position
             })
+            _stable = _origin_type == "empty"
         ))
         
         {
             cells: cells
-            stable: false
+            stable: _stable
         }
 
 
@@ -194,22 +201,27 @@ define([
         bedead = chkbyNei(thisCell, current, cells, opts.num)
         EMPTY = opts.EMPTY
         _origin_type = thisCell.type
+        _stable = true
         switch (bedead)
             when (0), (1), (2), (4), (7), (8) then
             else
                 cells[position].type = "ghost"
 
-        (cells[position].type == "ghost" && (cells[position].ghost++))
+        (cells[position].type == "ghost" && (
+            cells[position].ghost++
+            _stable = false
+        ))
 
         (cells[position].ghost == 17 && (
             cells[position] = new EMPTY({
             position: position
             })
+            _stable = _origin_type == "empty"
         ))
         
         {
             cells: cells
-            stable: false
+            stable: _stable
         }
 
     _fireworks = (thisCell, current, cells, opts) ->
@@ -217,22 +229,27 @@ define([
         bedead = chkbyNei(thisCell, current, cells, opts.num)
         EMPTY = opts.EMPTY
         _origin_type = thisCell.type
+        _stable = true
         switch (bedead)
             when (2) then
             else
                 cells[position].type = "ghost"
 
-        (cells[position].type == "ghost" && (cells[position].ghost++))
+        (cells[position].type == "ghost" && (
+            cells[position].ghost++
+            _stable = false
+        ))
 
         (cells[position].ghost == 20 && (
             cells[position] = new EMPTY({
             position: position
             })
+            _stable = _origin_type == "empty"
         ))
         
         {
             cells: cells
-            stable: false
+            stable: _stable
         }
 
 
@@ -241,22 +258,27 @@ define([
         bedead = chkbyNei(thisCell, current, cells, opts.num)
         EMPTY = opts.EMPTY
         _origin_type = thisCell.type
+        _stable = true
         switch (bedead)
             when (3), (4), (6), (7) then
             else
                 cells[position].type = "ghost"
 
-        (cells[position].type == "ghost" && (cells[position].ghost++))
+        (cells[position].type == "ghost" && (
+            cells[position].ghost++
+            _stable = false
+        ))
 
         (cells[position].ghost == 5 && (
             cells[position] = new EMPTY({
             position: position
             })
+            _stable = _origin_type == "empty"
         ))
         
         {
             cells: cells
-            stable: false
+            stable: _stable
         }
 
 
@@ -265,22 +287,27 @@ define([
         bedead = chkbyNei(thisCell, current, cells, opts.num)
         EMPTY = opts.EMPTY
         _origin_type = thisCell.type
+        _stable = true
         switch (bedead)
             when (2) then
             else
                 cells[position].type = "ghost"
 
-        (cells[position].type == "ghost" && (cells[position].ghost++))
+        (cells[position].type == "ghost" && (
+            cells[position].ghost++
+            _stable = false
+        ))
 
         (cells[position].ghost == 4 && (
             cells[position] = new EMPTY({
             position: position
             })
+            _stable = _origin_type == "empty"
         ))
         
         {
             cells: cells
-            stable: false
+            stable: _stable
         }
 
 
@@ -312,9 +339,8 @@ define([
             if (!!params.dying)
                 _dying = params.dying
                 _measure_num = _Math.random()
-                _const = if (_dying < 10) then ((10 - _dying) * 0.7) else (0)
-                _const = _Math.ceil(_const)
-                base_measure = 0.70 * (1 - (_dying + _const) / 20)
+                _const = if (_dying < 10) then ((100 - _dying * _dying) / 1000) else (-_dying * _dying / 10000)
+                base_measure = 0.70 * (1 - _dying / 20 - _const)
                 (_measure_num > base_measure && (
                     _measure_num = _Math.round(_Math.random() * (_dying - 1) + 1)
                     ((_measure_num) && (

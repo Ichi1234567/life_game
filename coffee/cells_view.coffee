@@ -13,6 +13,33 @@ define([
         food: FOOD,
         enemy: ENEMY
     }
+    global_timmer = null
+    global_count = 0
+    prev_status = null
+
+    window.requestAnimationFrame = (() ->
+        (
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame ||
+            window.oRequestAnimationFrame ||
+            window.msRequestAnimationFrame ||
+            #function FrameRequestCallback, DOMElement Element 
+            (callback, element) ->
+                window.setTimeout( callback, 1000 / 60 )
+        )
+    )()
+
+    window.cancelRequestAnimFrame = (() ->
+        (
+            window.cancelAnimationFrame ||
+            window.webkitCancelRequestAnimationFrame ||
+            window.mozCancelRequestAnimationFrame ||
+            window.oCancelRequestAnimationFrame ||
+            window.msCancelRequestAnimationFrame ||
+            clearTimeout
+        )
+    )()
+
 
     ROUTINES = {
         evalSet: (num, ghost_num, opts) ->
@@ -96,6 +123,7 @@ define([
         "events": {
             "click #reset": "reset"
             "click #next": "next"
+            "click #auto-run": "auto_run"
             "change #rnd_ghost": "chk_rnd_ghost"
             "change #mode": "chg_mode"
         }
@@ -105,6 +133,29 @@ define([
             @
 
 
+        auto_run: (e, status) ->
+            _$target = $(e.target)
+            if (!status)
+                _running = !!(_$target.attr("class"))
+                _$target.toggleClass("running")
+            _view = @
+
+            if (_running && !status)
+                _stable = true
+            else
+                _$target.html("stop")
+                _stable = false
+                (global_timmer && cancelRequestAnimFrame(global_timmer))
+                global_timmer = requestAnimationFrame(() ->
+                    _view.auto_run(e, true)
+                    _stable =_view.next()
+                )
+
+            if (_stable)
+                _$target.html("auto-run")
+                cancelRequestAnimFrame(global_timmer)
+                global_timmer = null
+            @
         chk_rnd_ghost: () ->
             _rule = $("#mode option:selected").html().split("/")
             if (_rule[2].length && _rule[2] != " ")
@@ -125,6 +176,7 @@ define([
 
         reset: () ->
             #console.log("click")
+            global_count = 0
             @cells = @set(@cellSet)
             _num = @num
             _cells = @cells
@@ -170,7 +222,6 @@ define([
             @cells = _cells
             _w = @w
             _h = @h
-            #console.log(_stable)
             @saveWorker.postMessage(@cells)
             _state = @state
             if (!_stable)
@@ -181,6 +232,18 @@ define([
                     true
                 )
             @current = (_current + 1) % 2
+            if (_stable && _stable == prev_status)
+                global_count++
+            else
+                global_count = 0
+                prev_status = null
+            ((global_count == 3) && (
+                $("#auto-run").trigger("click")
+                global_count = 0
+                prev_status = null
+            ))
+                        
+            _stable
 
 
         set: (cellset) ->
