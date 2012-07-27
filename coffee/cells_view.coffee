@@ -189,6 +189,8 @@ define([
 
         reset: () ->
             #console.log("click")
+            _is_auto_run = $("#auto-run").attr("class") == "running"
+            (_is_auto_run && $("#auto-run").trigger("click"))
             global_count = 0
             @cells = @set(@cellSet)
             _num = @num
@@ -251,12 +253,13 @@ define([
             else
                 global_count = 0
                 prev_status = null
-            ((global_count == 3) && (
+            ((global_count == 10) && (
                 global_count = 0
                 prev_status = null
                 _is_auto_reset = !!$("#auto-reset").attr("checked")
                 _view = @
                 (_is_auto_reset && _view.reset())
+                _localTime = null
                 (!_is_auto_reset && $("#auto-run").trigger("click"))
             ))
                         

@@ -183,7 +183,9 @@
         return this;
       },
       reset: function() {
-        var _cells, _current, _h, _num, _w;
+        var _cells, _current, _h, _is_auto_run, _num, _w;
+        _is_auto_run = $("#auto-run").attr("class") === "running";
+        _is_auto_run && $("#auto-run").trigger("click");
         global_count = 0;
         this.cells = this.set(this.cellSet);
         _num = this.num;
@@ -208,7 +210,7 @@
         return this;
       },
       next: function() {
-        var cells, i, mode, result, _cells, _current, _h, _is_auto_reset, _num, _stable, _state, _view, _w;
+        var cells, i, mode, result, _cells, _current, _h, _is_auto_reset, _localTime, _num, _stable, _state, _view, _w;
         _current = this.current;
         _cells = this.cells;
         _num = this.num;
@@ -249,7 +251,7 @@
           global_count = 0;
           prev_status = null;
         }
-        (global_count === 3) && (global_count = 0, prev_status = null, _is_auto_reset = !!$("#auto-reset").attr("checked"), _view = this, _is_auto_reset && _view.reset(), !_is_auto_reset && $("#auto-run").trigger("click"));
+        (global_count === 10) && (global_count = 0, prev_status = null, _is_auto_reset = !!$("#auto-reset").attr("checked"), _view = this, _is_auto_reset && _view.reset(), _localTime = null, !_is_auto_reset && $("#auto-run").trigger("click"));
         return _stable;
       },
       set: function(cellset) {
