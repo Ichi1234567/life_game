@@ -16,6 +16,10 @@ define([
     global_timmer = null
     global_count = 0
     prev_status = null
+    Frames = 0
+    UpdateTime = 1000
+    LastTime = new Date()
+    Fps = 0
 
     window.requestAnimationFrame = (() ->
         (
@@ -155,6 +159,15 @@ define([
                 _$target.html("auto-run")
                 cancelRequestAnimFrame(global_timmer)
                 global_timmer = null
+            else
+                curr_time = new Date()
+                Frames++
+                dt = curr_time.getTime() - LastTime.getTime()
+                if (dt > UpdateTime)
+                    _fps = _Math.round((Frames/dt) * UpdateTime)
+                    Frames = 0
+                    LastTime = curr_time
+                    $("#fps").html(_fps)
             @
         chk_rnd_ghost: () ->
             _rule = $("#mode option:selected").html().split("/")
