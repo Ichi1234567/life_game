@@ -27,15 +27,18 @@
     })();
     ROUTINES = {
       evalSet: function(num, ghost_num, opts) {
-        var _base;
+        var _avgSB, _base, _type;
         ghost_num = ghost_num ? ghost_num : 0.;
-        _base = 0.20;
+        _base = opts.base ? opts.base : 0.27;
+        _type = opts.type ? opts.type : "role";
+        _avgSB = opts.avgSB ? opts.avgSB : 0.;
         switch (ghost_num) {
           case 0.:
             break;
           default:
             _base *= 1 + ghost_num / 40;
         }
+        _base *= 1 - _avgSB / 10;
         return _Math.round(num * _base);
       },
       sortSets: function(sets, opts) {
@@ -61,13 +64,19 @@
         return sets;
       },
       generateSets: function(totalNum, opts) {
-        var sets, tmp_sets, _ghost, _types;
+        var sets, tmp_sets, _avgSB, _base, _ghost, _types;
         opts = opts ? opts : {};
         _types = opts.types ? opts.types : ["role"];
         _ghost = opts.ghost ? opts.ghost : 0.;
+        _base = opts.base ? opts.base : 0.27;
+        _avgSB = opts.avgSB ? opts.avgSB : 0.;
         tmp_sets = _types.map(function(type_i) {
           var num;
-          num = ROUTINES.evalSet(totalNum, _ghost);
+          num = ROUTINES.evalSet(totalNum, _ghost, {
+            base: _base,
+            type: type_i,
+            avgSB: _avgSB
+          });
           return {
             name: type_i,
             num: num
@@ -81,42 +90,32 @@
     };
     SCENE = Backbone.View.extend({
       initialize: function(params) {
-        var _cells, _h, _num, _saveWorker, _this, _w;
+        var _h, _saveWorker, _this, _w;
         params = params ? params : {};
         this.num = params.num ? params.num : 64.;
-        this.cellSet = ROUTINES.generateSets(this.num);
-        this.cells = this.set(this.cellSet);
-        _num = this.num;
-        _cells = this.cells;
         this.w = params.w ? params.w : 300.;
         this.h = params.h ? params.h : 300.;
         _w = this.w;
         _h = this.h;
         this.current = 0;
-        $(".plant").each(function(idx) {
-          $(this).showD3({
-            w: _w,
-            h: _h,
-            num: _Math.ceil(_Math.sqrt(_num)),
-            data: _cells
-          });
-          return idx && $(this).css("top", -(_h + 5));
-        });
         _saveWorker = new Worker("javascript/saveCurrent.js");
         this.saveWorker = _saveWorker;
         _this = this;
         _saveWorker.onmessage = function(e) {
           return _this.state = e.data;
         };
-        _saveWorker.postMessage(this.cells);
+        $(".plant").eq(1).css("top", -(_h + 5));
+        this.chk_opts();
+        this.reset("init");
         return this;
       },
       "events": {
         "click #reset": "click_reset",
         "click #next": "next",
         "click #auto-run": "auto_run",
-        "change #rnd_ghost": "chk_rnd_ghost",
-        "change #mode": "chg_mode"
+        "change #mode": "chg_opts",
+        "change #rnd_ghost": "chg_opts",
+        "change #chk-delay": "chg_opts"
       },
       render: function() {
         return this;
@@ -160,28 +159,24 @@
         }
         return this;
       },
-      chk_rnd_ghost: function() {
-        var _rule;
+      chg_opts: function(e) {
+        var _$target, _is_auto_run, _rule;
+        _$target = $(e.target);
         _rule = $("#mode option:selected").html().split("/");
-        if (_rule[2].length && _rule[2] !== " ") {
-          this.cellSet = ROUTINES.generateSets(this.num, {
-            ghost: parseInt(_rule[2])
-          });
-          this.reset();
-        }
-        return this;
-      },
-      chg_mode: function() {
-        var _chk_ghost, _ghost, _is_auto_run, _rule;
-        _rule = $("#mode option:selected").html().split("/");
-        _chk_ghost = !!$("#rnd_ghost").attr("checked");
-        _ghost = _chk_ghost && _rule[2].length && _rule[2] !== " " ? parseInt(_rule[2]) : 0.;
-        this.cellSet = ROUTINES.generateSets(this.num, {
-          ghost: _ghost
-        });
         _is_auto_run = $("#auto-run").attr("class") === "running";
-        _is_auto_run && $("#auto-run").trigger("click");
-        this.reset();
+        switch (true) {
+          case _$target.is("#mode"):
+            _is_auto_run && $("#auto-run").trigger("click");
+            this.chk_opts();
+            this.reset();
+            break;
+          case _$target.is("#chk-delay"):
+            this.chk_opts();
+            break;
+          case _rule[2].length && _rule[2] !== " ":
+            this.chk_opts();
+            !_is_auto_run && this.reset();
+        }
         return this;
       },
       click_reset: function() {
@@ -190,7 +185,29 @@
         _is_auto_run && $("#auto-run").trigger("click");
         return this.reset();
       },
-      reset: function() {
+      chk_opts: function() {
+        var i, sum, _chk_delay, _fn, _rule;
+        _chk_delay = !!$("#chk-delay").attr("checked");
+        _rule = $("#mode option:selected").html().split("/");
+        sum = 0;
+        _fn = function(i) {
+          return _rule[i].split("").forEach(function(val) {
+            var _val;
+            _val = parseInt(val);
+            return !isNaN(_val) && (sum += _val);
+          });
+        };
+        for (i = 0; i < 2; i++) {
+          _fn(i);
+        }
+        this.cellSet = ROUTINES.generateSets(this.num, {
+          ghost: parseInt(_rule[2]),
+          base: _chk_delay ? 0.2 : 0.27,
+          avgSB: _Math.round(sum / 9)
+        });
+        return this;
+      },
+      reset: function(init) {
         var _cells, _current, _h, _num, _w;
         global_count = 0;
         this.cells = this.set(this.cellSet);
@@ -203,7 +220,7 @@
         $(".plant").each(function(idx, elm) {
           var _chk;
           _chk = idx - _current;
-          _chk && $(elm).html("").showD3({
+          (init || _chk) && $(elm).html("").showD3({
             w: _w,
             h: _h,
             num: _Math.ceil(_Math.sqrt(_num)),
@@ -216,20 +233,22 @@
         return this;
       },
       next: function() {
-        var cells, i, mode, result, _cells, _current, _h, _is_auto_reset, _localTime, _num, _stable, _state, _view, _w;
+        var cells, i, mode, result, _cells, _chk_delay, _current, _h, _is_auto_reset, _localTime, _num, _stable, _state, _view, _w;
         _current = this.current;
         _cells = this.cells;
         _num = this.num;
         _state = this.state;
         _stable = true;
         mode = $("#mode option:selected").val();
+        _chk_delay = !!$("#chk-delay").attr("checked");
         for (i = 0; 0 <= _num ? i < _num : i > _num; 0 <= _num ? i++ : i--) {
           result = (function(i, cells) {
             return cells[i].move(_state, cells, mode, {
               EMPTY: BASIC,
               ROLE: ROLE,
               FOOD: FOOD,
-              ENEMY: ENEMY
+              ENEMY: ENEMY,
+              delay: _chk_delay
             });
           })(i, _cells);
           !result.stable && (_stable = false);

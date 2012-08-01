@@ -48,11 +48,15 @@ define([
     ROUTINES = {
         evalSet: (num, ghost_num, opts) ->
             ghost_num = if (ghost_num) then (ghost_num) else (0)
-            _base = 0.20
+            _base = if (opts.base) then (opts.base) else (0.27)
+            _type = if (opts.type) then (opts.type) else ("role")
+            _avgSB = if (opts.avgSB) then (opts.avgSB) else (0)
             switch ghost_num
                 when (0) then
                 else
                     _base *= (1 + ghost_num / 40)
+            _base *= (1 - _avgSB / 10)
+            #console.log(_base)
 
             _Math.round(num * _base)
 
@@ -81,8 +85,14 @@ define([
             opts = if (opts) then (opts) else ({})
             _types = if (opts.types) then (opts.types) else (["role"])
             _ghost = if (opts.ghost) then (opts.ghost) else (0)
+            _base = if (opts.base) then (opts.base) else (0.27)
+            _avgSB = if (opts.avgSB) then (opts.avgSB) else (0)
             tmp_sets = _types.map((type_i) ->
-                num = ROUTINES.evalSet(totalNum, _ghost)
+                num = ROUTINES.evalSet(totalNum, _ghost, {
+                    base: _base,
+                    type: type_i
+                    avgSB: _avgSB
+                })
                 {
                     name: type_i
                     num: num
@@ -98,38 +108,28 @@ define([
         initialize: (params) ->
             params = if (params) then (params) else ({})
             @num = if (params.num) then (params.num) else (64)
-            @cellSet = ROUTINES.generateSets(@num)
-            @cells = @set(@cellSet)
-            _num = @num
-            _cells = @cells
             @w = if (params.w) then (params.w) else (300)
             @h = if (params.h) then (params.h) else (300)
             _w = @w
             _h = @h
             @current = 0
-            $(".plant").each((idx) ->
-                $(this).showD3({
-                    w: _w,
-                    h: _h,
-                    num: _Math.ceil(_Math.sqrt(_num)),
-                    data: _cells
-                })
-                (idx && $(this).css("top", -(_h + 5)))
-            )
             _saveWorker = new Worker("javascript/saveCurrent.js")
             @saveWorker = _saveWorker
             _this = @
             _saveWorker.onmessage = (e) ->
                 _this.state = e.data
 
-            _saveWorker.postMessage(@cells)
+            $(".plant").eq(1).css("top", -(_h + 5))
+            @chk_opts()
+            @reset("init")
             @
         "events": {
             "click #reset": "click_reset"
             "click #next": "next"
             "click #auto-run": "auto_run"
-            "change #rnd_ghost": "chk_rnd_ghost"
-            "change #mode": "chg_mode"
+            "change #mode": "chg_opts"
+            "change #rnd_ghost": "chg_opts"
+            "change #chk-delay": "chg_opts"
         }
         render: () ->
             @
@@ -169,31 +169,44 @@ define([
                     LastTime = curr_time
                     $("#fps").html(_fps)
             @
-        chk_rnd_ghost: () ->
+        chg_opts: (e) ->
+            _$target = $(e.target)
             _rule = $("#mode option:selected").html().split("/")
-            if (_rule[2].length && _rule[2] != " ")
-                @cellSet = ROUTINES.generateSets(@num, {
-                    ghost: parseInt(_rule[2])
-                })
-                @reset()
-            @
-        chg_mode: () ->
-            _rule = $("#mode option:selected").html().split("/")
-            _chk_ghost = !!$("#rnd_ghost").attr("checked")
-            _ghost = if (_chk_ghost && _rule[2].length && _rule[2] != " ") then (parseInt(_rule[2])) else (0)
-            @cellSet = ROUTINES.generateSets(@num, {
-                ghost: _ghost
-            })
             _is_auto_run = $("#auto-run").attr("class") == "running"
-            (_is_auto_run && $("#auto-run").trigger("click"))
-            @reset()
+            switch (true)
+                when (_$target.is("#mode"))
+                    (_is_auto_run && $("#auto-run").trigger("click"))
+                    @chk_opts()
+                    @reset()
+                when (_$target.is("#chk-delay"))
+                    @chk_opts()
+                when (_rule[2].length && _rule[2] != " ")
+                    @chk_opts()
+                    (!_is_auto_run && @reset())
             @
         click_reset: () ->
             _is_auto_run = $("#auto-run").attr("class") == "running"
             (_is_auto_run && $("#auto-run").trigger("click"))
             @reset()
 
-        reset: () ->
+        chk_opts: () ->
+            _chk_delay = !!$("#chk-delay").attr("checked")
+            _rule = $("#mode option:selected").html().split("/")
+            sum = 0
+            for i in [0...2]
+                ((i) ->
+                    _rule[i].split("").forEach((val) ->
+                        _val = parseInt(val)
+                        (!isNaN(_val) && (sum += _val))
+                    )
+                )(i)
+            @cellSet = ROUTINES.generateSets(@num, {
+                ghost: parseInt(_rule[2]),
+                base: if (_chk_delay) then (0.2) else (0.27)
+                avgSB: _Math.round(sum / 9)
+            })
+            @
+        reset: (init) ->
             #console.log("click")
             global_count = 0
             @cells = @set(@cellSet)
@@ -205,7 +218,7 @@ define([
             @saveWorker.postMessage(_cells)
             $(".plant").each((idx, elm) ->
                 _chk = idx - _current
-                ((_chk) && $(elm).html("").showD3({
+                ((init || _chk) && $(elm).html("").showD3({
                     w: _w,
                     h: _h,
                     num: _Math.ceil(_Math.sqrt(_num)),
@@ -226,6 +239,7 @@ define([
             #_cells = _cells[0].move(_cells, "twotwo")
             _stable = true
             mode = $("#mode option:selected").val()
+            _chk_delay = !!$("#chk-delay").attr("checked")
             for i in [0..._num]
                 result = ((i, cells)->
                     #cells[i].move(cells, "twotwo")
@@ -233,7 +247,8 @@ define([
                         EMPTY: BASIC,
                         ROLE: ROLE,
                         FOOD: FOOD,
-                        ENEMY: ENEMY
+                        ENEMY: ENEMY,
+                        delay: _chk_delay
                     })
                 )(i, _cells)
                 (!result.stable && (_stable = false))

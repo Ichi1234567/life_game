@@ -327,13 +327,15 @@
       }
 
       ROLE.prototype.move = function(current, cells, mode, opts) {
-        var result;
+        var is_delay, result;
         opts.rule = RULE;
+        is_delay = opts.delay ? true : false;
+        delete opts.delay;
         result = {
           cells: cells,
           stable: true
         };
-        if (this.lifecycle < this.delay) {
+        if (is_delay && this.lifecycle < this.delay) {
           this.lifecycle++;
         } else {
           this.lifecycle = 0;

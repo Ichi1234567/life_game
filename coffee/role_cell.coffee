@@ -353,12 +353,14 @@ define([
 
         move: (current, cells, mode, opts) ->
             opts.rule = RULE
+            is_delay = if (opts.delay) then (true) else (false)
+            delete opts.delay
             result = {
                 cells: cells,
                 stable: true
             }
 
-            if (@lifecycle < @delay)
+            if (is_delay && @lifecycle < @delay)
                 @lifecycle++
             else
                 @lifecycle = 0
