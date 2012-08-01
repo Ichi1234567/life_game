@@ -315,7 +315,7 @@
         var base_measure, _const, _dying, _measure_num;
         ROLE.__super__.constructor.call(this, params);
         this.type = "role";
-        this.speed = "2";
+        this.delay = "2";
         if (!!params.dying) {
           _dying = params.dying;
           _measure_num = _Math.random();
@@ -327,8 +327,19 @@
       }
 
       ROLE.prototype.move = function(current, cells, mode, opts) {
+        var result;
         opts.rule = RULE;
-        return ROLE.__super__.move.call(this, current, cells, mode, opts);
+        result = {
+          cells: cells,
+          stable: true
+        };
+        if (this.lifecycle < this.delay) {
+          this.lifecycle++;
+        } else {
+          this.lifecycle = 0;
+          result = ROLE.__super__.move.call(this, current, cells, mode, opts);
+        }
+        return result;
       };
 
       return ROLE;

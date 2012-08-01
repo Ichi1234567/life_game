@@ -29,7 +29,7 @@
       evalSet: function(num, ghost_num, opts) {
         var _base;
         ghost_num = ghost_num ? ghost_num : 0.;
-        _base = 0.27;
+        _base = 0.20;
         switch (ghost_num) {
           case 0.:
             break;
@@ -290,12 +290,6 @@
       },
       clear: function() {
         this.cells = [];
-        return this;
-      },
-      start: function() {
-        return this;
-      },
-      stop: function() {
         return this;
       }
     });
