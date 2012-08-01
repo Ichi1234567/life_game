@@ -240,7 +240,7 @@ define([
     MODEL = Backbone.Model.extend({
         initialize: (params) ->
             @type = "empty"
-            @speed = 0
+            @delay = 0
             @lifecycle = 0
             @position = params.position
             @ghost = 0
@@ -248,7 +248,7 @@ define([
 
         constructor: (params) ->
             @type = "empty"
-            @speed = 0
+            @delay = 0
             @lifecycle = 0
             @position = params.position
             @ghost = 0
@@ -257,7 +257,7 @@ define([
         getData: () ->
             {
                 type: @type,
-                speed: @speed,
+                delay: @delay,
                 position: @position,
                 ghost: @ghost,
                 lifecycle: @lifecycle

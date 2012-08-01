@@ -48,7 +48,7 @@ define([
     ROUTINES = {
         evalSet: (num, ghost_num, opts) ->
             ghost_num = if (ghost_num) then (ghost_num) else (0)
-            _base = 0.27
+            _base = 0.20
             switch ghost_num
                 when (0) then
                 else
@@ -297,10 +297,6 @@ define([
             cells
         clear: () ->
             @cells = []
-            @
-        start: () ->
-            @
-        stop: () ->
             @
     })
 

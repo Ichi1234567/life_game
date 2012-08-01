@@ -243,7 +243,7 @@
     MODEL = Backbone.Model.extend({
       initialize: function(params) {
         this.type = "empty";
-        this.speed = 0;
+        this.delay = 0;
         this.lifecycle = 0;
         this.position = params.position;
         this.ghost = 0;
@@ -251,7 +251,7 @@
       },
       constructor: function(params) {
         this.type = "empty";
-        this.speed = 0;
+        this.delay = 0;
         this.lifecycle = 0;
         this.position = params.position;
         this.ghost = 0;
@@ -260,7 +260,7 @@
       getData: function() {
         return {
           type: this.type,
-          speed: this.speed,
+          delay: this.delay,
           position: this.position,
           ghost: this.ghost,
           lifecycle: this.lifecycle

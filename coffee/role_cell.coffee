@@ -335,7 +335,7 @@ define([
         constructor: (params) ->
             super(params)
             @type = "role"
-            @speed = "2"
+            @delay = "2"
 
             if (!!params.dying)
                 _dying = params.dying
@@ -353,7 +353,18 @@ define([
 
         move: (current, cells, mode, opts) ->
             opts.rule = RULE
-            super(current, cells, mode, opts)
+            result = {
+                cells: cells,
+                stable: true
+            }
+
+            if (@lifecycle < @delay)
+                @lifecycle++
+            else
+                @lifecycle = 0
+                result = super(current, cells, mode, opts)
+
+            result
 
     ROLE
 )
