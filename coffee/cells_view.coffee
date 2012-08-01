@@ -55,7 +55,9 @@ define([
                 when (0) then
                 else
                     _base *= (1 + ghost_num / 40)
-            _base *= (1 - _avgSB / 10)
+            _base2 = if(_Math.abs(ghost_num - _avgSB) <= 1) then (1) else (_Math.ceil(_avgSB / 3))
+            _base *= (1 - _avgSB / (10 / _base2))
+            #console.log(_avgSB)
             #console.log(_base)
 
             _Math.round(num * _base)

@@ -27,7 +27,7 @@
     })();
     ROUTINES = {
       evalSet: function(num, ghost_num, opts) {
-        var _avgSB, _base, _type;
+        var _avgSB, _base, _base2, _type;
         ghost_num = ghost_num ? ghost_num : 0.;
         _base = opts.base ? opts.base : 0.27;
         _type = opts.type ? opts.type : "role";
@@ -38,7 +38,8 @@
           default:
             _base *= 1 + ghost_num / 40;
         }
-        _base *= 1 - _avgSB / 10;
+        _base2 = _Math.abs(ghost_num - _avgSB) <= 1 ? 1. : _Math.ceil(_avgSB / 3);
+        _base *= 1 - _avgSB / (10 / _base2);
         return _Math.round(num * _base);
       },
       sortSets: function(sets, opts) {
