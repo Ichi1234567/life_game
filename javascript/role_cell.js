@@ -164,7 +164,7 @@
       _stable = true;
       cells[position].type = "ghost";
       cells[position].ghost++;
-      cells[position].ghost === 2 && (_stable = _origin_type === "empty", cells[position] = new EMPTY({
+      cells[position].ghost >= 3 && (_stable = _origin_type === "empty", cells[position] = new EMPTY({
         position: position
       }));
       return {
@@ -189,7 +189,7 @@
           cells[position].type = "ghost";
       }
       cells[position].type === "ghost" && (cells[position].ghost++, _stable = false);
-      cells[position].ghost === 6 && (cells[position] = new EMPTY({
+      cells[position].ghost >= 5 && (cells[position] = new EMPTY({
         position: position
       }), _stable = _origin_type === "empty");
       return {
@@ -216,7 +216,7 @@
           cells[position].type = "ghost";
       }
       cells[position].type === "ghost" && (cells[position].ghost++, _stable = false);
-      cells[position].ghost === 17 && (cells[position] = new EMPTY({
+      cells[position].ghost >= 16 && (cells[position] = new EMPTY({
         position: position
       }), _stable = _origin_type === "empty");
       return {
@@ -238,7 +238,7 @@
           cells[position].type = "ghost";
       }
       cells[position].type === "ghost" && (cells[position].ghost++, _stable = false);
-      cells[position].ghost === 20 && (cells[position] = new EMPTY({
+      cells[position].ghost >= 19 && (cells[position] = new EMPTY({
         position: position
       }), _stable = _origin_type === "empty");
       return {
@@ -263,7 +263,7 @@
           cells[position].type = "ghost";
       }
       cells[position].type === "ghost" && (cells[position].ghost++, _stable = false);
-      cells[position].ghost === 5 && (cells[position] = new EMPTY({
+      cells[position].ghost >= 4 && (cells[position] = new EMPTY({
         position: position
       }), _stable = _origin_type === "empty");
       return {
@@ -285,7 +285,7 @@
           cells[position].type = "ghost";
       }
       cells[position].type === "ghost" && (cells[position].ghost++, _stable = false);
-      cells[position].ghost === 4 && (cells[position] = new EMPTY({
+      cells[position].ghost >= 3 && (cells[position] = new EMPTY({
         position: position
       }), _stable = _origin_type === "empty");
       return {
@@ -319,9 +319,10 @@
         if (!!params.dying) {
           _dying = params.dying;
           _measure_num = _Math.random();
-          _const = _dying < 10 ? (100 - _dying * _dying) / 1000 : -_dying * _dying / 10000;
-          base_measure = 0.70 * (1 - _dying / 20 - _const);
-          _measure_num > base_measure && (_measure_num = _Math.round(_Math.random() * (_dying - 1) + 1), _measure_num && (this.type = "ghost", this.ghost = _measure_num));
+          _const = _Math.sin((_dying / 21) * _Math.PI);
+          base_measure = 0.70 - _const;
+          base_measure = _Math.max(_const, base_measure);
+          _measure_num > base_measure && (_measure_num = _Math.round(_Math.random() * (_dying - 2) + 1), this.type = "ghost", this.ghost = _measure_num);
         }
         this;
       }

@@ -187,16 +187,18 @@
         return this.reset();
       },
       chk_opts: function() {
-        var i, sum, _chk_delay, _fn, _rule;
+        var i, sum, _chk_delay, _fn, _len, _rule;
         _chk_delay = !!$("#chk-delay").attr("checked");
         _rule = $("#mode option:selected").html().split("/");
         sum = 0;
+        _len = 0;
         _fn = function(i) {
-          return _rule[i].split("").forEach(function(val) {
+          _rule[i].split("").forEach(function(val) {
             var _val;
             _val = parseInt(val);
             return !isNaN(_val) && (sum += _val);
           });
+          return _len += _rule[i].length;
         };
         for (i = 0; i < 2; i++) {
           _fn(i);
@@ -204,7 +206,7 @@
         this.cellSet = ROUTINES.generateSets(this.num, {
           ghost: parseInt(_rule[2]),
           base: _chk_delay ? 0.2 : 0.27,
-          avgSB: _Math.round(sum / 9)
+          avgSB: _Math.round(sum / _len)
         });
         return this;
       },

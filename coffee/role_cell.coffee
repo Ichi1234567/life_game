@@ -155,7 +155,7 @@ define([
         _stable = true
         cells[position].type = "ghost"
         cells[position].ghost++
-        (cells[position].ghost == 2 && (
+        (cells[position].ghost >= 3 && (
             _stable = _origin_type == "empty"
             cells[position] = new EMPTY({
             position: position
@@ -184,7 +184,7 @@ define([
             _stable = false
         ))
 
-        (cells[position].ghost == 6 && (
+        (cells[position].ghost >= 5 && (
             cells[position] = new EMPTY({
             position: position
             })
@@ -213,7 +213,7 @@ define([
             _stable = false
         ))
 
-        (cells[position].ghost == 17 && (
+        (cells[position].ghost >= 16 && (
             cells[position] = new EMPTY({
             position: position
             })
@@ -241,7 +241,7 @@ define([
             _stable = false
         ))
 
-        (cells[position].ghost == 20 && (
+        (cells[position].ghost >= 19 && (
             cells[position] = new EMPTY({
             position: position
             })
@@ -270,7 +270,7 @@ define([
             _stable = false
         ))
 
-        (cells[position].ghost == 5 && (
+        (cells[position].ghost >= 4 && (
             cells[position] = new EMPTY({
             position: position
             })
@@ -299,7 +299,7 @@ define([
             _stable = false
         ))
 
-        (cells[position].ghost == 4 && (
+        (cells[position].ghost >= 3 && (
             cells[position] = new EMPTY({
             position: position
             })
@@ -340,14 +340,16 @@ define([
             if (!!params.dying)
                 _dying = params.dying
                 _measure_num = _Math.random()
-                _const = if (_dying < 10) then ((100 - _dying * _dying) / 1000) else (-_dying * _dying / 10000)
-                base_measure = 0.70 * (1 - _dying / 20 - _const)
+                #_const = if (_dying < 10) then ((100 - _dying * _dying) / 1000) else (-_dying * _dying / 10000)
+                #base_measure = 0.70 * (1 - _dying / 20 - _const)
+                _const = _Math.sin((_dying / 21) * _Math.PI)
+                base_measure = 0.70 - _const
+                base_measure = _Math.max(_const, base_measure)
+
                 (_measure_num > base_measure && (
-                    _measure_num = _Math.round(_Math.random() * (_dying - 1) + 1)
-                    ((_measure_num) && (
-                        @type = "ghost"
-                        @ghost = _measure_num
-                    ))
+                    _measure_num = _Math.round(_Math.random() * (_dying - 2) + 1)
+                    @type = "ghost"
+                    @ghost = _measure_num
                 ))
             @
 

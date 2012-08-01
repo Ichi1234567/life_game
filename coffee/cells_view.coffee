@@ -56,9 +56,17 @@ define([
                 else
                     _base *= (1 + ghost_num / 40)
             _base2 = if(_Math.abs(ghost_num - _avgSB) <= 1) then (1) else (_Math.ceil(_avgSB / 3))
+            #_base2 = 1
+            #_base2 = _Math.round(_avgSB / 3)
             _base *= (1 - _avgSB / (10 / _base2))
-            #console.log(_avgSB)
-            #console.log(_base)
+
+            #_const = _Math.sin((ghost_num / 21) * _Math.PI)
+            #base_measure = 0.70 - _const
+
+            #console.log("_avg：" + _avgSB)
+            #console.log("base：" + _base)
+            #console.log("cons：" + _const)
+            #console.log("bame：" + base_measure)
 
             _Math.round(num * _base)
 
@@ -195,17 +203,19 @@ define([
             _chk_delay = !!$("#chk-delay").attr("checked")
             _rule = $("#mode option:selected").html().split("/")
             sum = 0
+            _len = 0
             for i in [0...2]
                 ((i) ->
                     _rule[i].split("").forEach((val) ->
                         _val = parseInt(val)
                         (!isNaN(_val) && (sum += _val))
                     )
+                    _len += _rule[i].length
                 )(i)
             @cellSet = ROUTINES.generateSets(@num, {
                 ghost: parseInt(_rule[2]),
                 base: if (_chk_delay) then (0.2) else (0.27)
-                avgSB: _Math.round(sum / 9)
+                avgSB: _Math.round(sum / _len)
             })
             @
         reset: (init) ->
