@@ -27,19 +27,18 @@
     })();
     ROUTINES = {
       evalSet: function(num, ghost_num, opts) {
-        var _avgSB, _base, _base2, _type;
+        var _avgSB, _base, _type;
         ghost_num = ghost_num ? ghost_num : 0.;
         _base = opts.base ? opts.base : 0.27;
         _type = opts.type ? opts.type : "role";
         _avgSB = opts.avgSB ? opts.avgSB : 0.;
+        _base *= _Math.cos(_avgSB / 9);
         switch (ghost_num) {
           case 0.:
             break;
           default:
             _base *= 1 + ghost_num / 40;
         }
-        _base2 = _Math.abs(ghost_num - _avgSB) <= 1 ? 1. : _Math.ceil(_avgSB / 3);
-        _base *= 1 - _avgSB / (10 / _base2);
         return _Math.round(num * _base);
       },
       sortSets: function(sets, opts) {
@@ -206,7 +205,7 @@
         this.cellSet = ROUTINES.generateSets(this.num, {
           ghost: parseInt(_rule[2]),
           base: _chk_delay ? 0.2 : 0.27,
-          avgSB: _Math.round(sum / _len)
+          avgSB: (_rule[0].length + _rule[1].length) / 2
         });
         return this;
       },

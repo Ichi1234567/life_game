@@ -3,7 +3,7 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
   define(["basic_cell"], function(BASIC_CELL) {
-    var ROLE, RULE, chkbyNei, _Math, _banners, _brainbrain, _conway, _ebbflow, _fireworks, _flakes, _logic, _maze, _rake, _replicator, _spirals, _twoxtwo;
+    var ROLE, RULE, chkbyNei, _Math, _assimilation, _banners, _belzhab, _brainbrain, _conway, _ebbflow, _fireworks, _flakes, _flaming_starbow, _frozen_spirals, _logic, _maze, _rake, _replicator, _soft_freeze, _spirals, _star_wars, _twoxtwo;
     console.log("role_cell");
     _Math = Math;
     chkbyNei = function(thisCell, current, cells, num) {
@@ -155,6 +155,30 @@
         stable: _stable
       };
     };
+    _assimilation = function(thisCell, current, cells, opts) {
+      var EMPTY, bedead, position, _origin_type, _stable;
+      position = thisCell.position;
+      bedead = chkbyNei(thisCell, current, cells, opts.num);
+      EMPTY = opts.EMPTY;
+      _origin_type = thisCell.type;
+      _stable = true;
+      switch (bedead) {
+        case 4.:
+        case 5.:
+        case 6.:
+        case 7.:
+          break;
+        default:
+          _stable = _origin_type === "empty";
+          cells[position] = new EMPTY({
+            position: position
+          });
+      }
+      return {
+        cells: cells,
+        stable: _stable
+      };
+    };
     _brainbrain = function(thisCell, current, cells, opts) {
       var EMPTY, bedead, position, _origin_type, _stable;
       position = thisCell.position;
@@ -293,6 +317,127 @@
         stable: _stable
       };
     };
+    _star_wars = function(thisCell, current, cells, opts) {
+      var EMPTY, bedead, position, _origin_type, _stable;
+      position = thisCell.position;
+      bedead = chkbyNei(thisCell, current, cells, opts.num);
+      EMPTY = opts.EMPTY;
+      _origin_type = thisCell.type;
+      _stable = true;
+      switch (bedead) {
+        case 3.:
+        case 4.:
+        case 5.:
+          break;
+        default:
+          cells[position].type = "ghost";
+      }
+      cells[position].type === "ghost" && (cells[position].ghost++, _stable = false);
+      cells[position].ghost >= 4 && (cells[position] = new EMPTY({
+        position: position
+      }), _stable = _origin_type === "empty");
+      return {
+        cells: cells,
+        stable: _stable
+      };
+    };
+    _soft_freeze = function(thisCell, current, cells, opts) {
+      var EMPTY, bedead, position, _origin_type, _stable;
+      position = thisCell.position;
+      bedead = chkbyNei(thisCell, current, cells, opts.num);
+      EMPTY = opts.EMPTY;
+      _origin_type = thisCell.type;
+      _stable = true;
+      switch (bedead) {
+        case 1.:
+        case 3.:
+        case 4.:
+        case 5.:
+        case 8.:
+          break;
+        default:
+          cells[position].type = "ghost";
+      }
+      cells[position].type === "ghost" && (cells[position].ghost++, _stable = false);
+      cells[position].ghost >= 6 && (cells[position] = new EMPTY({
+        position: position
+      }), _stable = _origin_type === "empty");
+      return {
+        cells: cells,
+        stable: _stable
+      };
+    };
+    _frozen_spirals = function(thisCell, current, cells, opts) {
+      var EMPTY, bedead, position, _origin_type, _stable;
+      position = thisCell.position;
+      bedead = chkbyNei(thisCell, current, cells, opts.num);
+      EMPTY = opts.EMPTY;
+      _origin_type = thisCell.type;
+      _stable = true;
+      switch (bedead) {
+        case 3.:
+        case 5.:
+        case 6.:
+          break;
+        default:
+          cells[position].type = "ghost";
+      }
+      cells[position].type === "ghost" && (cells[position].ghost++, _stable = false);
+      cells[position].ghost >= 6 && (cells[position] = new EMPTY({
+        position: position
+      }), _stable = _origin_type === "empty");
+      return {
+        cells: cells,
+        stable: _stable
+      };
+    };
+    _belzhab = function(thisCell, current, cells, opts) {
+      var EMPTY, bedead, position, _origin_type, _stable;
+      position = thisCell.position;
+      bedead = chkbyNei(thisCell, current, cells, opts.num);
+      EMPTY = opts.EMPTY;
+      _origin_type = thisCell.type;
+      _stable = true;
+      switch (bedead) {
+        case 2.:
+        case 3.:
+          break;
+        default:
+          cells[position].type = "ghost";
+      }
+      cells[position].type === "ghost" && (cells[position].ghost++, _stable = false);
+      cells[position].ghost >= 8 && (cells[position] = new EMPTY({
+        position: position
+      }), _stable = _origin_type === "empty");
+      return {
+        cells: cells,
+        stable: _stable
+      };
+    };
+    _flaming_starbow = function(thisCell, current, cells, opts) {
+      var EMPTY, bedead, position, _origin_type, _stable;
+      position = thisCell.position;
+      bedead = chkbyNei(thisCell, current, cells, opts.num);
+      EMPTY = opts.EMPTY;
+      _origin_type = thisCell.type;
+      _stable = true;
+      switch (bedead) {
+        case 3.:
+        case 4.:
+        case 7.:
+          break;
+        default:
+          cells[position].type = "ghost";
+      }
+      cells[position].type === "ghost" && (cells[position].ghost++, _stable = false);
+      cells[position].ghost >= 6 && (cells[position] = new EMPTY({
+        position: position
+      }), _stable = _origin_type === "empty");
+      return {
+        cells: cells,
+        stable: _stable
+      };
+    };
     RULE = {
       twoxtwo: _twoxtwo,
       conway: _conway,
@@ -300,12 +445,18 @@
       maze: _maze,
       replicator: _replicator,
       logic: _logic,
+      assimilation: _assimilation,
       brainbrain: _brainbrain,
       banners: _banners,
       ebbflow: _ebbflow,
       fireworks: _fireworks,
       rake: _rake,
-      spirals: _spirals
+      spirals: _spirals,
+      star_wars: _star_wars,
+      soft_freeze: _soft_freeze,
+      frozen_spirals: _frozen_spirals,
+      belzhab: _belzhab,
+      flaming_starbow: _flaming_starbow
     };
     ROLE = (function(_super) {
 

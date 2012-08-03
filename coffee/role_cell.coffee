@@ -142,6 +142,25 @@ define([
             stable: _stable
         }
 
+    _assimilation = (thisCell, current, cells, opts) ->
+        position = thisCell.position
+        bedead = chkbyNei(thisCell, current, cells, opts.num)
+        EMPTY = opts.EMPTY
+        _origin_type = thisCell.type
+        _stable = true
+        switch (bedead)
+            when (4), (5), (6), (7) then
+            else
+                _stable = _origin_type == "empty"
+                cells[position] = new EMPTY({
+                    position: position
+                })
+        
+        {
+            cells: cells
+            stable: _stable
+        }
+
 
         ####################################
         # there's ghost state
@@ -311,6 +330,144 @@ define([
             stable: _stable
         }
 
+    _star_wars = (thisCell, current, cells, opts) ->
+        position = thisCell.position
+        bedead = chkbyNei(thisCell, current, cells, opts.num)
+        EMPTY = opts.EMPTY
+        _origin_type = thisCell.type
+        _stable = true
+        switch (bedead)
+            when (3), (4), (5) then
+            else
+                cells[position].type = "ghost"
+
+        (cells[position].type == "ghost" && (
+            cells[position].ghost++
+            _stable = false
+        ))
+        (cells[position].ghost >= 4 && (
+            cells[position] = new EMPTY({
+            position: position
+            })
+            _stable = _origin_type == "empty"
+        ))
+        
+        {
+            cells: cells
+            stable: _stable
+        }
+
+    _soft_freeze = (thisCell, current, cells, opts) ->
+        position = thisCell.position
+        bedead = chkbyNei(thisCell, current, cells, opts.num)
+        EMPTY = opts.EMPTY
+        _origin_type = thisCell.type
+        _stable = true
+        switch (bedead)
+            when (1), (3), (4), (5), (8) then
+            else
+                cells[position].type = "ghost"
+
+        (cells[position].type == "ghost" && (
+            cells[position].ghost++
+            _stable = false
+        ))
+        (cells[position].ghost >= 6 && (
+            cells[position] = new EMPTY({
+            position: position
+            })
+            _stable = _origin_type == "empty"
+        ))
+        
+        {
+            cells: cells
+            stable: _stable
+        }
+
+
+    _frozen_spirals = (thisCell, current, cells, opts) ->
+        position = thisCell.position
+        bedead = chkbyNei(thisCell, current, cells, opts.num)
+        EMPTY = opts.EMPTY
+        _origin_type = thisCell.type
+        _stable = true
+        switch (bedead)
+            when (3), (5), (6) then
+            else
+                cells[position].type = "ghost"
+
+        (cells[position].type == "ghost" && (
+            cells[position].ghost++
+            _stable = false
+        ))
+        (cells[position].ghost >= 6 && (
+            cells[position] = new EMPTY({
+            position: position
+            })
+            _stable = _origin_type == "empty"
+        ))
+        
+        {
+            cells: cells
+            stable: _stable
+        }
+
+
+    _belzhab = (thisCell, current, cells, opts) ->
+        position = thisCell.position
+        bedead = chkbyNei(thisCell, current, cells, opts.num)
+        EMPTY = opts.EMPTY
+        _origin_type = thisCell.type
+        _stable = true
+        switch (bedead)
+            when (2), (3) then
+            else
+                cells[position].type = "ghost"
+
+        (cells[position].type == "ghost" && (
+            cells[position].ghost++
+            _stable = false
+        ))
+        (cells[position].ghost >= 8 && (
+            cells[position] = new EMPTY({
+            position: position
+            })
+            _stable = _origin_type == "empty"
+        ))
+        
+        {
+            cells: cells
+            stable: _stable
+        }
+
+
+    _flaming_starbow = (thisCell, current, cells, opts) ->
+        position = thisCell.position
+        bedead = chkbyNei(thisCell, current, cells, opts.num)
+        EMPTY = opts.EMPTY
+        _origin_type = thisCell.type
+        _stable = true
+        switch (bedead)
+            when (3), (4), (7) then
+            else
+                cells[position].type = "ghost"
+
+        (cells[position].type == "ghost" && (
+            cells[position].ghost++
+            _stable = false
+        ))
+        (cells[position].ghost >= 6 && (
+            cells[position] = new EMPTY({
+            position: position
+            })
+            _stable = _origin_type == "empty"
+        ))
+        
+        {
+            cells: cells
+            stable: _stable
+        }
+
 
     ####################################################
     RULE = {
@@ -320,6 +477,7 @@ define([
         maze: _maze,
         replicator: _replicator,
         logic: _logic,
+        assimilation: _assimilation,
 
         #########################
         brainbrain: _brainbrain,
@@ -327,7 +485,12 @@ define([
         ebbflow: _ebbflow,
         fireworks: _fireworks,
         rake: _rake,
-        spirals: _spirals
+        spirals: _spirals,
+        star_wars: _star_wars,
+        soft_freeze: _soft_freeze,
+        frozen_spirals: _frozen_spirals,
+        belzhab: _belzhab,
+        flaming_starbow: _flaming_starbow
     }
 
     ####################################################
