@@ -118,7 +118,25 @@ define([
         }
 
 
-        ####################################
+    _assimilation = (thisCell, current, cells, opts) ->
+        position = thisCell.position
+        bedead = chkbyNei(thisCell, current, cells, opts.num)
+        ROLE = opts.ROLE
+        _origin_type = thisCell.type
+        _stable = true
+        switch (bedead)
+            when (3), (4), (5)
+                _stable = _origin_type == "role"
+                cells[position] = new ROLE({
+                    position: position
+                })
+        
+        {
+            cells: cells
+            stable: _stable
+        }
+
+        ###################################
         # there's ghost state
 
     _brainbrain = _logic
@@ -216,6 +234,65 @@ define([
             stable: _stable
         }
 
+    _star_wars = (thisCell, current, cells, opts) ->
+        position = thisCell.position
+        bedead = chkbyNei(thisCell, current, cells, opts.num)
+        ROLE = opts.ROLE
+        _origin_type = thisCell.type
+        _stable = true
+        switch (bedead)
+            when (2)
+                _stable = (_origin_type == "role") && (!thisCell.ghost)
+                cells[position] = new ROLE({
+                    position: position
+                })
+        
+        {
+            cells: cells
+            stable: _stable
+        }
+    
+
+    _soft_freeze = (thisCell, current, cells, opts) ->
+        position = thisCell.position
+        bedead = chkbyNei(thisCell, current, cells, opts.num)
+        ROLE = opts.ROLE
+        _origin_type = thisCell.type
+        _stable = true
+        switch (bedead)
+            when (3), (8)
+                _stable = (_origin_type == "role") && (!thisCell.ghost)
+                cells[position] = new ROLE({
+                    position: position
+                })
+        
+        {
+            cells: cells
+            stable: _stable
+        }
+    
+
+    _frozen_spirals = (thisCell, current, cells, opts) ->
+        position = thisCell.position
+        bedead = chkbyNei(thisCell, current, cells, opts.num)
+        ROLE = opts.ROLE
+        _origin_type = thisCell.type
+        _stable = true
+        switch (bedead)
+            when (2), (3)
+                _stable = (_origin_type == "role") && (!thisCell.ghost)
+                cells[position] = new ROLE({
+                    position: position
+                })
+        
+        {
+            cells: cells
+            stable: _stable
+        }
+    
+
+    _belzhab = _frozen_spirals
+    _flaming_starbow = _frozen_spirals
 
     ####################################################
     RULE = {
@@ -225,6 +302,7 @@ define([
         maze: _maze,
         replicator: _replicator,
         logic: _logic,
+        assimilation: _assimilation,
 
         ###############
         brainbrain: _brainbrain,
@@ -232,7 +310,12 @@ define([
         ebbflow: _ebbflow,
         fireworks: _fireworks,
         rake: _rake,
-        spirals: _spirals
+        spirals: _spirals,
+        star_wars: _star_wars,
+        soft_freeze: _soft_freeze,
+        frozen_spirals: _frozen_spirals,
+        belzhab: _belzhab,
+        flaming_starbow: _flaming_starbow
     }
 
     ####################################################

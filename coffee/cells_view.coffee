@@ -51,14 +51,16 @@ define([
             _base = if (opts.base) then (opts.base) else (0.27)
             _type = if (opts.type) then (opts.type) else ("role")
             _avgSB = if (opts.avgSB) then (opts.avgSB) else (0)
+            # 先算base
+            _base *= _Math.cos(_avgSB / 9)
+            # 用ghost調整
             switch ghost_num
                 when (0) then
                 else
                     _base *= (1 + ghost_num / 40)
-            _base2 = if(_Math.abs(ghost_num - _avgSB) <= 1) then (1) else (_Math.ceil(_avgSB / 3))
-            _base *= (1 - _avgSB / (10 / _base2))
-            #console.log(_avgSB)
-            #console.log(_base)
+            #console.log("ori-base：" + _base)
+            #console.log("_avg：" + _avgSB)
+            #console.log("base：" + _base)
 
             _Math.round(num * _base)
 
@@ -195,17 +197,20 @@ define([
             _chk_delay = !!$("#chk-delay").attr("checked")
             _rule = $("#mode option:selected").html().split("/")
             sum = 0
+            _len = 0
             for i in [0...2]
                 ((i) ->
                     _rule[i].split("").forEach((val) ->
                         _val = parseInt(val)
                         (!isNaN(_val) && (sum += _val))
                     )
+                    _len += _rule[i].length
                 )(i)
             @cellSet = ROUTINES.generateSets(@num, {
                 ghost: parseInt(_rule[2]),
                 base: if (_chk_delay) then (0.2) else (0.27)
-                avgSB: _Math.round(sum / 9)
+                #avgSB: _Math.round(sum / _len)
+                avgSB: (_rule[0].length + _rule[1].length) / 2
             })
             @
         reset: (init) ->
