@@ -41,47 +41,52 @@ define([
 
         bedead
 
+    _baseFn = (thisCell, current, cells, opts) ->
+        position = thisCell.position
+        bedead = chkbyNei(thisCell, current, cells, opts.num)
+        EMPTY = opts.EMPTY
+        _origin_type = thisCell.type
+        _stable = true
+
+        rule_desc = (opts.desc).split("/")
+        rule_nei = rule_desc[0].split("")
+        i = rule_nei.length
+        chk = false
+        while(i)
+            (bedead == parseInt(rule_nei[--i]) && (
+                chk = true
+                i = 0
+            ))
+        (!chk && rule_desc[2].length && (
+            cells[position].type = "ghost"
+        ))
+
+        (cells[position].type == "ghost" && (
+            cells[position].ghost++
+            _stable = false
+        ))
+
+        (((!chk && !rule_desc[2].length) ||
+        (cells[position].ghost >= parseInt(rule_desc[2]))) && (
+            cells[position] = new EMPTY({
+                position: position
+            })
+            _stable = _origin_type == "empty"
+        ))
+        
+        {
+            cells: cells
+            stable: _stable
+        }
 
     ####################################################
     _twoxtwo = (thisCell, current, cells, opts) ->
-        #console.log(thisCell)
-        #console.log(cells)
-        position = thisCell.position
-        bedead = chkbyNei(thisCell, current, cells, opts.num)
-        EMPTY = opts.EMPTY
-        _origin_type = thisCell.type
-        _stable = true
-        switch (bedead)
-            when (1), (2), (5) then
-            else
-                cells[position] = new EMPTY({
-                    position: position
-                })
-                _stable = _origin_type == "empty"
-        
-        {
-            cells: cells
-            stable: _stable
-        }
+        opts.desc = "125/36/"
+        _baseFn(thisCell, current, cells, opts)
 
     _conway = (thisCell, current, cells, opts) ->
-        position = thisCell.position
-        bedead = chkbyNei(thisCell, current, cells, opts.num)
-        EMPTY = opts.EMPTY
-        _origin_type = thisCell.type
-        _stable = true
-        switch (bedead)
-            when (2), (3) then
-            else
-                _stable = _origin_type == "empty"
-                cells[position] = new EMPTY({
-                    position: position
-                })
-        
-        {
-            cells: cells
-            stable: _stable
-        }
+        opts.desc = "23/3/"
+        _baseFn(thisCell, current, cells, opts)
 
     _flakes = (thisCell, current, cells, opts) ->
         {
@@ -90,76 +95,28 @@ define([
         }
 
     _maze = (thisCell, current, cells, opts) ->
-        position = thisCell.position
-        bedead = chkbyNei(thisCell, current, cells, opts.num)
-        EMPTY = opts.EMPTY
-        _origin_type = thisCell.type
-        _stable = true
-        switch (bedead)
-            when (1), (2), (3), (4), (5) then
-            else
-                _stable = _origin_type == "empty"
-                cells[position] = new EMPTY({
-                    position: position
-                })
-        
-        {
-            cells: cells
-            stable: _stable
-        }
+        opts.desc = "12345/3/"
+        _baseFn(thisCell, current, cells, opts)
 
     _replicator = (thisCell, current, cells, opts) ->
-        position = thisCell.position
-        bedead = chkbyNei(thisCell, current, cells, opts.num)
-        EMPTY = opts.EMPTY
-        _origin_type = thisCell.type
-        _stable = true
-        switch (bedead)
-            when (1), (3), (5), (7) then
-            else
-                _stable = _origin_type == "empty"
-                cells[position] = new EMPTY({
-                    position: position
-                })
-        
-        {
-            cells: cells
-            stable: _stable
-        }
+        opts.desc = "1357/1357/"
+        _baseFn(thisCell, current, cells, opts)
 
     _logic = (thisCell, current, cells, opts) ->
         position = thisCell.position
-        bedead = chkbyNei(thisCell, current, cells, opts.num)
         EMPTY = opts.EMPTY
-        _origin_type = thisCell.type
-        _stable = _origin_type == "empty"
         cells[position] = new EMPTY({
             position: position
         })
         
         {
             cells: cells
-            stable: _stable
+            stable: false
         }
 
     _assimilation = (thisCell, current, cells, opts) ->
-        position = thisCell.position
-        bedead = chkbyNei(thisCell, current, cells, opts.num)
-        EMPTY = opts.EMPTY
-        _origin_type = thisCell.type
-        _stable = true
-        switch (bedead)
-            when (4), (5), (6), (7) then
-            else
-                _stable = _origin_type == "empty"
-                cells[position] = new EMPTY({
-                    position: position
-                })
-        
-        {
-            cells: cells
-            stable: _stable
-        }
+        opts.desc = "4567/345/"
+        _baseFn(thisCell, current, cells, opts)
 
 
         ####################################
@@ -188,285 +145,45 @@ define([
 
 
     _banners = (thisCell, current, cells, opts) ->
-        position = thisCell.position
-        bedead = chkbyNei(thisCell, current, cells, opts.num)
-        EMPTY = opts.EMPTY
-        _origin_type = thisCell.type
-        _stable = true
-        switch (bedead)
-            when (2), (3), (6), (7) then
-            else
-                cells[position].type = "ghost"
-
-        (cells[position].type == "ghost" && (
-            cells[position].ghost++
-            _stable = false
-        ))
-
-        (cells[position].ghost >= 5 && (
-            cells[position] = new EMPTY({
-            position: position
-            })
-            _stable = _origin_type == "empty"
-        ))
-        
-        {
-            cells: cells
-            stable: _stable
-        }
+        opts.desc = "2367/3457/5"
+        _baseFn(thisCell, current, cells, opts)
 
 
     _ebbflow = (thisCell, current, cells, opts) ->
-        position = thisCell.position
-        bedead = chkbyNei(thisCell, current, cells, opts.num)
-        EMPTY = opts.EMPTY
-        _origin_type = thisCell.type
-        _stable = true
-        switch (bedead)
-            when (0), (1), (2), (4), (7), (8) then
-            else
-                cells[position].type = "ghost"
-
-        (cells[position].type == "ghost" && (
-            cells[position].ghost++
-            _stable = false
-        ))
-
-        (cells[position].ghost >= 16 && (
-            cells[position] = new EMPTY({
-            position: position
-            })
-            _stable = _origin_type == "empty"
-        ))
-        
-        {
-            cells: cells
-            stable: _stable
-        }
+        opts.desc = "012478/36/16"
+        _baseFn(thisCell, current, cells, opts)
 
     _fireworks = (thisCell, current, cells, opts) ->
-        position = thisCell.position
-        bedead = chkbyNei(thisCell, current, cells, opts.num)
-        EMPTY = opts.EMPTY
-        _origin_type = thisCell.type
-        _stable = true
-        switch (bedead)
-            when (2) then
-            else
-                cells[position].type = "ghost"
-
-        (cells[position].type == "ghost" && (
-            cells[position].ghost++
-            _stable = false
-        ))
-
-        (cells[position].ghost >= 19 && (
-            cells[position] = new EMPTY({
-            position: position
-            })
-            _stable = _origin_type == "empty"
-        ))
-        
-        {
-            cells: cells
-            stable: _stable
-        }
-
+        opts.desc = "2/13/19"
+        _baseFn(thisCell, current, cells, opts)
 
     _rake = (thisCell, current, cells, opts) ->
-        position = thisCell.position
-        bedead = chkbyNei(thisCell, current, cells, opts.num)
-        EMPTY = opts.EMPTY
-        _origin_type = thisCell.type
-        _stable = true
-        switch (bedead)
-            when (3), (4), (6), (7) then
-            else
-                cells[position].type = "ghost"
-
-        (cells[position].type == "ghost" && (
-            cells[position].ghost++
-            _stable = false
-        ))
-
-        (cells[position].ghost >= 4 && (
-            cells[position] = new EMPTY({
-            position: position
-            })
-            _stable = _origin_type == "empty"
-        ))
-        
-        {
-            cells: cells
-            stable: _stable
-        }
-
+        opts.desc = "3467/2678/4"
+        _baseFn(thisCell, current, cells, opts)
 
     _spirals = (thisCell, current, cells, opts) ->
-        position = thisCell.position
-        bedead = chkbyNei(thisCell, current, cells, opts.num)
-        EMPTY = opts.EMPTY
-        _origin_type = thisCell.type
-        _stable = true
-        switch (bedead)
-            when (2) then
-            else
-                cells[position].type = "ghost"
-
-        (cells[position].type == "ghost" && (
-            cells[position].ghost++
-            _stable = false
-        ))
-
-        (cells[position].ghost >= 3 && (
-            cells[position] = new EMPTY({
-            position: position
-            })
-            _stable = _origin_type == "empty"
-        ))
-        
-        {
-            cells: cells
-            stable: _stable
-        }
+        opts.desc = "2/234/3"
+        _baseFn(thisCell, current, cells, opts)
 
     _star_wars = (thisCell, current, cells, opts) ->
-        position = thisCell.position
-        bedead = chkbyNei(thisCell, current, cells, opts.num)
-        EMPTY = opts.EMPTY
-        _origin_type = thisCell.type
-        _stable = true
-        switch (bedead)
-            when (3), (4), (5) then
-            else
-                cells[position].type = "ghost"
-
-        (cells[position].type == "ghost" && (
-            cells[position].ghost++
-            _stable = false
-        ))
-        (cells[position].ghost >= 4 && (
-            cells[position] = new EMPTY({
-            position: position
-            })
-            _stable = _origin_type == "empty"
-        ))
-        
-        {
-            cells: cells
-            stable: _stable
-        }
+        opts.desc = "345/2/4"
+        _baseFn(thisCell, current, cells, opts)
 
     _soft_freeze = (thisCell, current, cells, opts) ->
-        position = thisCell.position
-        bedead = chkbyNei(thisCell, current, cells, opts.num)
-        EMPTY = opts.EMPTY
-        _origin_type = thisCell.type
-        _stable = true
-        switch (bedead)
-            when (1), (3), (4), (5), (8) then
-            else
-                cells[position].type = "ghost"
-
-        (cells[position].type == "ghost" && (
-            cells[position].ghost++
-            _stable = false
-        ))
-        (cells[position].ghost >= 6 && (
-            cells[position] = new EMPTY({
-            position: position
-            })
-            _stable = _origin_type == "empty"
-        ))
-        
-        {
-            cells: cells
-            stable: _stable
-        }
-
+        opts.desc = "13458/38/6"
+        _baseFn(thisCell, current, cells, opts)
 
     _frozen_spirals = (thisCell, current, cells, opts) ->
-        position = thisCell.position
-        bedead = chkbyNei(thisCell, current, cells, opts.num)
-        EMPTY = opts.EMPTY
-        _origin_type = thisCell.type
-        _stable = true
-        switch (bedead)
-            when (3), (5), (6) then
-            else
-                cells[position].type = "ghost"
-
-        (cells[position].type == "ghost" && (
-            cells[position].ghost++
-            _stable = false
-        ))
-        (cells[position].ghost >= 6 && (
-            cells[position] = new EMPTY({
-            position: position
-            })
-            _stable = _origin_type == "empty"
-        ))
-        
-        {
-            cells: cells
-            stable: _stable
-        }
-
+        opts.desc = "356/23/6"
+        _baseFn(thisCell, current, cells, opts)
 
     _belzhab = (thisCell, current, cells, opts) ->
-        position = thisCell.position
-        bedead = chkbyNei(thisCell, current, cells, opts.num)
-        EMPTY = opts.EMPTY
-        _origin_type = thisCell.type
-        _stable = true
-        switch (bedead)
-            when (2), (3) then
-            else
-                cells[position].type = "ghost"
-
-        (cells[position].type == "ghost" && (
-            cells[position].ghost++
-            _stable = false
-        ))
-        (cells[position].ghost >= 8 && (
-            cells[position] = new EMPTY({
-            position: position
-            })
-            _stable = _origin_type == "empty"
-        ))
-        
-        {
-            cells: cells
-            stable: _stable
-        }
-
+        opts.desc = "23/23/8"
+        _baseFn(thisCell, current, cells, opts)
 
     _flaming_starbow = (thisCell, current, cells, opts) ->
-        position = thisCell.position
-        bedead = chkbyNei(thisCell, current, cells, opts.num)
-        EMPTY = opts.EMPTY
-        _origin_type = thisCell.type
-        _stable = true
-        switch (bedead)
-            when (3), (4), (7) then
-            else
-                cells[position].type = "ghost"
-
-        (cells[position].type == "ghost" && (
-            cells[position].ghost++
-            _stable = false
-        ))
-        (cells[position].ghost >= 6 && (
-            cells[position] = new EMPTY({
-            position: position
-            })
-            _stable = _origin_type == "empty"
-        ))
-        
-        {
-            cells: cells
-            stable: _stable
-        }
+        opts.desc = "347/23/6"
+        _baseFn(thisCell, current, cells, opts)
 
 
     ####################################################
