@@ -1,7 +1,7 @@
 (function() {
 
-  define([], function() {
-    var MODEL, RULE, chkbyNei, _Math, _assimilation, _banners, _belzhab, _brainbrain, _conway, _ebbflow, _fireworks, _flakes, _flaming_starbow, _frozen_spirals, _logic, _maze, _rake, _replicator, _soft_freeze, _spirals, _star_wars, _twoxtwo;
+  define(["rule"], function(RULE) {
+    var MODEL, chkbyNei, _Math, _assimilation, _banners, _belzhab, _brainbrain, _conway, _ebbflow, _fireworks, _flakes, _flaming_starbow, _frozen_spirals, _logic, _maze, _rake, _replicator, _soft_freeze, _spirals, _star_wars, _twoxtwo;
     _Math = Math;
     chkbyNei = function(thisCell, current, cells, num) {
       var bedead, c_size, delta, position, this_row;

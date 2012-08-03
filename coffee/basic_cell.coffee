@@ -1,5 +1,7 @@
 define([
-], () ->
+    "rule"
+], (RULE) ->
+    #console.log(RULE)
     _Math = Math
     chkbyNei = (thisCell, current, cells, num) ->
         position = thisCell.position

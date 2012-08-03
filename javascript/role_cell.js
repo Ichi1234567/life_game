@@ -2,9 +2,10 @@
   var __hasProp = Object.prototype.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
-  define(["basic_cell"], function(BASIC_CELL) {
-    var ROLE, RULE, chkbyNei, _Math, _assimilation, _banners, _baseFn, _belzhab, _brainbrain, _conway, _ebbflow, _fireworks, _flakes, _flaming_starbow, _frozen_spirals, _logic, _maze, _rake, _replicator, _soft_freeze, _spirals, _star_wars, _twoxtwo;
+  define(["basic_cell", "rule"], function(BASIC_CELL, RULE) {
+    var ROLE, chkbyNei, _Math, _assimilation, _banners, _baseFn, _belzhab, _brainbrain, _conway, _ebbflow, _fireworks, _flakes, _flaming_starbow, _frozen_spirals, _logic, _maze, _rake, _replicator, _soft_freeze, _spirals, _star_wars, _twoxtwo;
     console.log("role_cell");
+    console.log(RULE);
     _Math = Math;
     chkbyNei = function(thisCell, current, cells, num) {
       var bedead, c_size, delta, position, this_row;
@@ -47,16 +48,16 @@
       EMPTY = opts.EMPTY;
       _origin_type = thisCell.type;
       _stable = true;
-      rule_desc = opts.desc.split("/");
-      rule_nei = rule_desc[0].split("");
+      rule_desc = opts.desc;
+      rule_nei = rule_desc[0];
       i = rule_nei.length;
       chk = false;
       while (i) {
-        bedead === parseInt(rule_nei[--i]) && (chk = true, i = 0);
+        bedead === rule_nei[--i] && (chk = true, i = 0);
       }
-      !chk && rule_desc[2].length && (cells[position].type = "ghost");
+      !chk && rule_desc[2] > 0 && (cells[position].type = "ghost");
       cells[position].type === "ghost" && (cells[position].ghost++, _stable = false);
-      ((!chk && !rule_desc[2].length) || (cells[position].ghost >= parseInt(rule_desc[2]))) && (cells[position] = new EMPTY({
+      ((!chk && rule_desc[2] < 0) || (rule_desc[2] > 0 && cells[position].ghost >= rule_desc[2])) && (cells[position] = new EMPTY({
         position: position
       }), _stable = _origin_type === "empty");
       return {
@@ -159,26 +160,6 @@
       opts.desc = "347/23/6";
       return _baseFn(thisCell, current, cells, opts);
     };
-    RULE = {
-      twoxtwo: _twoxtwo,
-      conway: _conway,
-      flakes: _flakes,
-      maze: _maze,
-      replicator: _replicator,
-      logic: _logic,
-      assimilation: _assimilation,
-      brainbrain: _brainbrain,
-      banners: _banners,
-      ebbflow: _ebbflow,
-      fireworks: _fireworks,
-      rake: _rake,
-      spirals: _spirals,
-      star_wars: _star_wars,
-      soft_freeze: _soft_freeze,
-      frozen_spirals: _frozen_spirals,
-      belzhab: _belzhab,
-      flaming_starbow: _flaming_starbow
-    };
     ROLE = (function(_super) {
 
       __extends(ROLE, _super);
@@ -201,6 +182,8 @@
 
       ROLE.prototype.move = function(current, cells, mode, opts) {
         var is_delay, result;
+        opts = opts ? opts : {};
+        opts.num = cells.length;
         opts.rule = RULE;
         is_delay = opts.delay ? true : false;
         delete opts.delay;
@@ -212,7 +195,10 @@
           this.lifecycle++;
         } else {
           this.lifecycle = 0;
-          result = ROLE.__super__.move.call(this, current, cells, mode, opts);
+          if (!!RULE[mode]) {
+            opts.desc = RULE[mode];
+            _baseFn(this, current, cells, opts);
+          }
         }
         return result;
       };

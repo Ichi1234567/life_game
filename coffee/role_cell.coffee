@@ -1,7 +1,9 @@
 define([
     "basic_cell"
-], (BASIC_CELL) ->
+    "rule"
+], (BASIC_CELL, RULE) ->
     console.log("role_cell")
+    console.log(RULE)
     _Math = Math
     chkbyNei = (thisCell, current, cells, num) ->
         position = thisCell.position
@@ -48,16 +50,16 @@ define([
         _origin_type = thisCell.type
         _stable = true
 
-        rule_desc = (opts.desc).split("/")
-        rule_nei = rule_desc[0].split("")
+        rule_desc = opts.desc
+        rule_nei = rule_desc[0]
         i = rule_nei.length
         chk = false
         while(i)
-            (bedead == parseInt(rule_nei[--i]) && (
+            (bedead == rule_nei[--i] && (
                 chk = true
                 i = 0
             ))
-        (!chk && rule_desc[2].length && (
+        (!chk && rule_desc[2] > 0 && (
             cells[position].type = "ghost"
         ))
 
@@ -66,8 +68,8 @@ define([
             _stable = false
         ))
 
-        (((!chk && !rule_desc[2].length) ||
-        (cells[position].ghost >= parseInt(rule_desc[2]))) && (
+        (((!chk && rule_desc[2] < 0) ||
+        (rule_desc[2] > 0 && cells[position].ghost >= rule_desc[2])) && (
             cells[position] = new EMPTY({
                 position: position
             })
@@ -143,11 +145,9 @@ define([
             stable: _stable
         }
 
-
     _banners = (thisCell, current, cells, opts) ->
         opts.desc = "2367/3457/5"
         _baseFn(thisCell, current, cells, opts)
-
 
     _ebbflow = (thisCell, current, cells, opts) ->
         opts.desc = "012478/36/16"
@@ -187,28 +187,28 @@ define([
 
 
     ####################################################
-    RULE = {
-        twoxtwo: _twoxtwo,
-        conway: _conway,
-        flakes: _flakes,
-        maze: _maze,
-        replicator: _replicator,
-        logic: _logic,
-        assimilation: _assimilation,
+    #RULE = {
+    #    twoxtwo: _twoxtwo,
+    #    conway: _conway,
+    #    flakes: _flakes,
+    #    maze: _maze,
+    #    replicator: _replicator,
+    #    logic: _logic,
+    #    assimilation: _assimilation,
 
-        #########################
-        brainbrain: _brainbrain,
-        banners: _banners,
-        ebbflow: _ebbflow,
-        fireworks: _fireworks,
-        rake: _rake,
-        spirals: _spirals,
-        star_wars: _star_wars,
-        soft_freeze: _soft_freeze,
-        frozen_spirals: _frozen_spirals,
-        belzhab: _belzhab,
-        flaming_starbow: _flaming_starbow
-    }
+    #    #########################
+    #    brainbrain: _brainbrain,
+    #    banners: _banners,
+    #    ebbflow: _ebbflow,
+    #    fireworks: _fireworks,
+    #    rake: _rake,
+    #    spirals: _spirals,
+    #    star_wars: _star_wars,
+    #    soft_freeze: _soft_freeze,
+    #    frozen_spirals: _frozen_spirals,
+    #    belzhab: _belzhab,
+    #    flaming_starbow: _flaming_starbow
+    #}
 
     ####################################################
     class ROLE extends BASIC_CELL
@@ -234,6 +234,8 @@ define([
             @
 
         move: (current, cells, mode, opts) ->
+            opts = if (opts) then (opts) else ({})
+            opts.num = cells.length
             opts.rule = RULE
             is_delay = if (opts.delay) then (true) else (false)
             delete opts.delay
@@ -246,7 +248,10 @@ define([
                 @lifecycle++
             else
                 @lifecycle = 0
-                result = super(current, cells, mode, opts)
+                #result = super(current, cells, mode, opts)
+                if (!!RULE[mode])
+                    opts.desc = RULE[mode]
+                    _baseFn(@, current, cells, opts)
 
             result
 
