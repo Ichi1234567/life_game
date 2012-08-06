@@ -3,7 +3,7 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
   define(["basic_cell", "rule"], function(BASIC_CELL, RULE) {
-    var ROLE, chkbyNei, _Math, _assimilation, _banners, _baseFn, _belzhab, _brainbrain, _conway, _ebbflow, _fireworks, _flakes, _flaming_starbow, _frozen_spirals, _logic, _maze, _rake, _replicator, _soft_freeze, _spirals, _star_wars, _twoxtwo;
+    var ROLE, chkbyNei, _Math, _baseFn;
     console.log("role_cell");
     console.log(RULE);
     _Math = Math;
@@ -64,101 +64,6 @@
         cells: cells,
         stable: _stable
       };
-    };
-    _twoxtwo = function(thisCell, current, cells, opts) {
-      opts.desc = "125/36/";
-      return _baseFn(thisCell, current, cells, opts);
-    };
-    _conway = function(thisCell, current, cells, opts) {
-      opts.desc = "23/3/";
-      return _baseFn(thisCell, current, cells, opts);
-    };
-    _flakes = function(thisCell, current, cells, opts) {
-      return {
-        cells: cells,
-        stable: true
-      };
-    };
-    _maze = function(thisCell, current, cells, opts) {
-      opts.desc = "12345/3/";
-      return _baseFn(thisCell, current, cells, opts);
-    };
-    _replicator = function(thisCell, current, cells, opts) {
-      opts.desc = "1357/1357/";
-      return _baseFn(thisCell, current, cells, opts);
-    };
-    _logic = function(thisCell, current, cells, opts) {
-      var EMPTY, position;
-      position = thisCell.position;
-      EMPTY = opts.EMPTY;
-      cells[position] = new EMPTY({
-        position: position
-      });
-      return {
-        cells: cells,
-        stable: false
-      };
-    };
-    _assimilation = function(thisCell, current, cells, opts) {
-      opts.desc = "4567/345/";
-      return _baseFn(thisCell, current, cells, opts);
-    };
-    _brainbrain = function(thisCell, current, cells, opts) {
-      var EMPTY, bedead, position, _origin_type, _stable;
-      position = thisCell.position;
-      bedead = chkbyNei(thisCell, current, cells, opts.num);
-      EMPTY = opts.EMPTY;
-      _origin_type = thisCell.type;
-      _stable = true;
-      cells[position].type = "ghost";
-      cells[position].ghost++;
-      cells[position].ghost >= 3 && (_stable = _origin_type === "empty", cells[position] = new EMPTY({
-        position: position
-      }));
-      return {
-        cells: cells,
-        stable: _stable
-      };
-    };
-    _banners = function(thisCell, current, cells, opts) {
-      opts.desc = "2367/3457/5";
-      return _baseFn(thisCell, current, cells, opts);
-    };
-    _ebbflow = function(thisCell, current, cells, opts) {
-      opts.desc = "012478/36/16";
-      return _baseFn(thisCell, current, cells, opts);
-    };
-    _fireworks = function(thisCell, current, cells, opts) {
-      opts.desc = "2/13/19";
-      return _baseFn(thisCell, current, cells, opts);
-    };
-    _rake = function(thisCell, current, cells, opts) {
-      opts.desc = "3467/2678/4";
-      return _baseFn(thisCell, current, cells, opts);
-    };
-    _spirals = function(thisCell, current, cells, opts) {
-      opts.desc = "2/234/3";
-      return _baseFn(thisCell, current, cells, opts);
-    };
-    _star_wars = function(thisCell, current, cells, opts) {
-      opts.desc = "345/2/4";
-      return _baseFn(thisCell, current, cells, opts);
-    };
-    _soft_freeze = function(thisCell, current, cells, opts) {
-      opts.desc = "13458/38/6";
-      return _baseFn(thisCell, current, cells, opts);
-    };
-    _frozen_spirals = function(thisCell, current, cells, opts) {
-      opts.desc = "356/23/6";
-      return _baseFn(thisCell, current, cells, opts);
-    };
-    _belzhab = function(thisCell, current, cells, opts) {
-      opts.desc = "23/23/8";
-      return _baseFn(thisCell, current, cells, opts);
-    };
-    _flaming_starbow = function(thisCell, current, cells, opts) {
-      opts.desc = "347/23/6";
-      return _baseFn(thisCell, current, cells, opts);
     };
     ROLE = (function(_super) {
 

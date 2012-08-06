@@ -89,8 +89,6 @@ define([
             if (!!params.dying)
                 _dying = params.dying
                 _measure_num = _Math.random()
-                #_const = if (_dying < 10) then ((100 - _dying * _dying) / 1000) else (-_dying * _dying / 10000)
-                #base_measure = 0.70 * (1 - _dying / 20 - _const)
                 _const = _Math.sin((_dying / 21) * _Math.PI)
                 base_measure = 0.70 - _const
                 base_measure = _Math.max(_const, base_measure)
