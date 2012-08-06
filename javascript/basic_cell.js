@@ -91,7 +91,6 @@
         opts = opts ? opts : {};
         opts.num = cells.length;
         _rule = RULE;
-        opts.rule && (_rule = opts.rule, delete opts.rule);
         result = {
           cells: cells,
           stable: true

@@ -101,10 +101,10 @@ define([
             opts = if (opts) then (opts) else ({})
             opts.num = cells.length
             _rule = RULE
-            (opts.rule && (
-                _rule = opts.rule
-                delete opts.rule
-            ))
+            #(opts.rule && (
+            #    _rule = opts.rule
+            #    delete opts.rule
+            #))
 
             result = {
                 cells: cells,

@@ -115,7 +115,6 @@ define([
                 @lifecycle++
             else
                 @lifecycle = 0
-                #result = super(current, cells, mode, opts)
                 if (!!RULE[mode])
                     opts.desc = RULE[mode]
                     result = _baseFn(@, current, cells, opts)
