@@ -56,7 +56,7 @@
         bedead === rule_nei[--i] && (chk = true, i = 0);
       }
       !chk && rule_desc[2] > 0 && (cells[position].type = "ghost");
-      cells[position].type === "ghost" && (cells[position].ghost++, _stable = false);
+      (cells[position].type === "ghost") && (cells[position].ghost++, _stable = false);
       ((!chk && rule_desc[2] < 0) || (rule_desc[2] > 0 && cells[position].ghost >= rule_desc[2])) && (cells[position] = new EMPTY({
         position: position
       }), _stable = _origin_type === "empty");
@@ -197,7 +197,7 @@
           this.lifecycle = 0;
           if (!!RULE[mode]) {
             opts.desc = RULE[mode];
-            _baseFn(this, current, cells, opts);
+            result = _baseFn(this, current, cells, opts);
           }
         }
         return result;
