@@ -1,5 +1,7 @@
 define([
-], () ->
+    "rule"
+], (RULE) ->
+    #console.log(RULE)
     _Math = Math
     chkbyNei = (thisCell, current, cells, num) ->
         position = thisCell.position
@@ -39,284 +41,33 @@ define([
 
         bedead
 
-    ####################################################
-    _twoxtwo = (thisCell, current, cells, opts) ->
-        #console.log(thisCell)
-        #console.log(cells)
+    _baseFn = (thisCell, current, cells, opts) ->
         position = thisCell.position
         bedead = chkbyNei(thisCell, current, cells, opts.num)
         ROLE = opts.ROLE
         _origin_type = thisCell.type
         _stable = true
-        switch (bedead)
-            when (3), (6)
-                cells[position] = new ROLE({
-                    position: position
-                })
-                _stable = _origin_type == "role"
-        
+
+
+        rule_desc = opts.desc
+        rule_nei = rule_desc[1]
+        i = rule_nei.length
+        chk = false
+        while(i)
+            (bedead == rule_nei[--i] && (
+                chk = true
+                i = 0
+            ))
+
+        ((chk) && (
+            cells[position] = new ROLE({ position: position })
+            _stable = (_origin_type == "role")
+        ))
+
         {
             cells: cells
             stable: _stable
         }
-
-    _conway = (thisCell, current, cells, opts) ->
-        position = thisCell.position
-        bedead = chkbyNei(thisCell, current, cells, opts.num)
-        ROLE = opts.ROLE
-        _origin_type = thisCell.type
-        _stable = true
-        switch (bedead)
-            when (3)
-                _stable = _origin_type == "role"
-                cells[position] = new ROLE({
-                    position: position
-                })
-        
-        {
-            cells: cells
-            stable: _stable
-        }
-
-    _flakes = _conway
-    _maze = _conway
-
-    _replicator = (thisCell, current, cells, opts) ->
-        position = thisCell.position
-        bedead = chkbyNei(thisCell, current, cells, opts.num)
-        ROLE = opts.ROLE
-        _origin_type = thisCell.type
-        _stable = true
-        switch (bedead)
-            when (1), (3), (5), (7)
-                _stable = _origin_type == "role"
-                cells[position] = new ROLE({
-                    position: position
-                })
-        
-        {
-            cells: cells
-            stable: _stable
-        }
-
-    _logic = (thisCell, current, cells, opts) ->
-        position = thisCell.position
-        bedead = chkbyNei(thisCell, current, cells, opts.num)
-        ROLE = opts.ROLE
-        _origin_type = thisCell.type
-        _stable = true
-        switch (bedead)
-            when (2)
-                _stable = _origin_type == "role"
-                cells[position] = new ROLE({
-                    position: position
-                })
-        
-        {
-            cells: cells
-            stable: _stable
-        }
-
-
-    _assimilation = (thisCell, current, cells, opts) ->
-        position = thisCell.position
-        bedead = chkbyNei(thisCell, current, cells, opts.num)
-        ROLE = opts.ROLE
-        _origin_type = thisCell.type
-        _stable = true
-        switch (bedead)
-            when (3), (4), (5)
-                _stable = _origin_type == "role"
-                cells[position] = new ROLE({
-                    position: position
-                })
-        
-        {
-            cells: cells
-            stable: _stable
-        }
-
-        ###################################
-        # there's ghost state
-
-    _brainbrain = _logic
-
-    _banners = (thisCell, current, cells, opts) ->
-        position = thisCell.position
-        bedead = chkbyNei(thisCell, current, cells, opts.num)
-        ROLE = opts.ROLE
-        _origin_type = thisCell.type
-        _stable = true
-        switch (bedead)
-            when (3), (4), (5), (7)
-                _stable = (_origin_type == "role") && (!thisCell.ghost)
-                cells[position] = new ROLE({
-                    position: position
-                })
-        
-        {
-            cells: cells
-            stable: _stable
-        }
-
-    _ebbflow = (thisCell, current, cells, opts) ->
-        position = thisCell.position
-        bedead = chkbyNei(thisCell, current, cells, opts.num)
-        ROLE = opts.ROLE
-        _origin_type = thisCell.type
-        _stable = true
-        switch (bedead)
-            when (3), (6)
-                _stable = (_origin_type == "role") && (!thisCell.ghost)
-                cells[position] = new ROLE({
-                    position: position
-                })
-        
-        {
-            cells: cells
-            stable: _stable
-        }
-
-
-    _fireworks = (thisCell, current, cells, opts) ->
-        position = thisCell.position
-        bedead = chkbyNei(thisCell, current, cells, opts.num)
-        ROLE = opts.ROLE
-        _origin_type = thisCell.type
-        _stable = true
-        switch (bedead)
-            when (1), (3)
-                _stable = (_origin_type == "role") && (!thisCell.ghost)
-                cells[position] = new ROLE({
-                    position: position
-                })
-        
-        {
-            cells: cells
-            stable: _stable
-        }
-
-
-    _rake = (thisCell, current, cells, opts) ->
-        position = thisCell.position
-        bedead = chkbyNei(thisCell, current, cells, opts.num)
-        ROLE = opts.ROLE
-        _origin_type = thisCell.type
-        _stable = true
-        switch (bedead)
-            when (2), (6), (7), (8)
-                _stable = (_origin_type == "role") && (!thisCell.ghost)
-                cells[position] = new ROLE({
-                    position: position
-                })
-        
-        {
-            cells: cells
-            stable: _stable
-        }
-
-
-    _spirals = (thisCell, current, cells, opts) ->
-        position = thisCell.position
-        bedead = chkbyNei(thisCell, current, cells, opts.num)
-        ROLE = opts.ROLE
-        _origin_type = thisCell.type
-        _stable = true
-        switch (bedead)
-            when (2), (3), (4)
-                _stable = (_origin_type == "role") && (!thisCell.ghost)
-                cells[position] = new ROLE({
-                    position: position
-                })
-        
-        {
-            cells: cells
-            stable: _stable
-        }
-
-    _star_wars = (thisCell, current, cells, opts) ->
-        position = thisCell.position
-        bedead = chkbyNei(thisCell, current, cells, opts.num)
-        ROLE = opts.ROLE
-        _origin_type = thisCell.type
-        _stable = true
-        switch (bedead)
-            when (2)
-                _stable = (_origin_type == "role") && (!thisCell.ghost)
-                cells[position] = new ROLE({
-                    position: position
-                })
-        
-        {
-            cells: cells
-            stable: _stable
-        }
-    
-
-    _soft_freeze = (thisCell, current, cells, opts) ->
-        position = thisCell.position
-        bedead = chkbyNei(thisCell, current, cells, opts.num)
-        ROLE = opts.ROLE
-        _origin_type = thisCell.type
-        _stable = true
-        switch (bedead)
-            when (3), (8)
-                _stable = (_origin_type == "role") && (!thisCell.ghost)
-                cells[position] = new ROLE({
-                    position: position
-                })
-        
-        {
-            cells: cells
-            stable: _stable
-        }
-    
-
-    _frozen_spirals = (thisCell, current, cells, opts) ->
-        position = thisCell.position
-        bedead = chkbyNei(thisCell, current, cells, opts.num)
-        ROLE = opts.ROLE
-        _origin_type = thisCell.type
-        _stable = true
-        switch (bedead)
-            when (2), (3)
-                _stable = (_origin_type == "role") && (!thisCell.ghost)
-                cells[position] = new ROLE({
-                    position: position
-                })
-        
-        {
-            cells: cells
-            stable: _stable
-        }
-    
-
-    _belzhab = _frozen_spirals
-    _flaming_starbow = _frozen_spirals
-
-    ####################################################
-    RULE = {
-        twoxtwo: _twoxtwo,
-        conway: _conway,
-        flakes: _flakes,
-        maze: _maze,
-        replicator: _replicator,
-        logic: _logic,
-        assimilation: _assimilation,
-
-        ###############
-        brainbrain: _brainbrain,
-        banners: _banners,
-        ebbflow: _ebbflow,
-        fireworks: _fireworks,
-        rake: _rake,
-        spirals: _spirals,
-        star_wars: _star_wars,
-        soft_freeze: _soft_freeze,
-        frozen_spirals: _frozen_spirals,
-        belzhab: _belzhab,
-        flaming_starbow: _flaming_starbow
-    }
 
     ####################################################
     console.log("basic_cell")
@@ -355,12 +106,13 @@ define([
                 delete opts.rule
             ))
 
-            if (typeof _rule[mode] != "function")
-                return {
-                    cells: cells,
-                    stable: true
-                }
-            result = _rule[mode](@, current, cells, opts)
+            result = {
+                cells: cells,
+                stable: true
+            }
+            if (!!_rule[mode])
+                opts.desc = RULE[mode]
+                result = _baseFn(@, current, cells, opts)
             result
     })
 
