@@ -3,10 +3,9 @@ define([
 ], (RULE) ->
     #console.log(RULE)
     _Math = Math
-    chkbyNei = (thisCell, current, cells, num) ->
+    chkbyNei = (thisCell, current, cells, c_size) ->
         position = thisCell.position
         thisCell.lifecycle++
-        c_size = _Math.sqrt(num)
         this_row = _Math.floor(position / c_size)
         delta = [
             1,
@@ -33,11 +32,10 @@ define([
 
     _baseFn = (thisCell, current, cells, opts) ->
         position = thisCell.position
-        bedead = chkbyNei(thisCell, current, cells, opts.num)
+        bedead = chkbyNei(thisCell, current, cells, opts.c_size)
         ROLE = opts.ROLE
         _origin_type = thisCell.type
         _stable = true
-
 
         rule_desc = opts.desc
         rule_nei = rule_desc[1]
@@ -51,10 +49,10 @@ define([
 
         ((chk) && (
             cells[position] = new ROLE({
-                position: position,
-                visited: true
+                position: position
             })
-            _stable = (_origin_type == "role")
+            #_stable = (_origin_type == "role")
+            _stable = false
         ))
 
         {
