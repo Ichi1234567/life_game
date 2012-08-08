@@ -3,7 +3,7 @@ define([
     "rule"
 ], (BASIC_CELL, RULE) ->
     console.log("role_cell")
-    console.log(RULE)
+    #console.log(RULE)
     _Math = Math
     chkbyNei = (thisCell, current, cells, num) ->
         position = thisCell.position
@@ -33,13 +33,11 @@ define([
 
             nei_pos = position + delta_i
             row = _Math.floor(nei_pos / c_size)
-            if ((row - this_row) == chk_row)
+            if (!(row - this_row - chk_row))
                 cell_nei = current[nei_pos]
                 if (!!cell_nei && cell_nei.type == "role")
-                    ghost_i = cell_nei.ghost
-                    ((typeof ghost_i == "number" && !ghost_i) && (bedead++))
+                    bedead++
         )
-        ((thisCell.type == "role") && (bedead--))
 
         bedead
 
@@ -111,13 +109,14 @@ define([
                 stable: true
             }
 
-            if (is_delay && @lifecycle < @delay)
-                @lifecycle++
-            else
-                @lifecycle = 0
-                if (!!RULE[mode])
-                    opts.desc = RULE[mode]
-                    result = _baseFn(@, current, cells, opts)
+            if (!@visited)
+                if (is_delay && @lifecycle < @delay)
+                    @lifecycle++
+                else
+                    @lifecycle = 0
+                    if (!!RULE[mode])
+                        opts.desc = RULE[mode]
+                        result = _baseFn(@, current, cells, opts)
 
             result
 

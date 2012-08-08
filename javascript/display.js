@@ -62,6 +62,7 @@
       elm = d3.select(this[0]);
       cells.map(function(thisCell) {
         var _className, _id;
+        thisCell.visied = false;
         _id = "#grid_" + thisCell.position;
         _className = thisCell.type;
         _className === "ghost" && (_className += thisCell.ghost.toString());

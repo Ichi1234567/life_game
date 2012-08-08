@@ -5,7 +5,6 @@
   define(["basic_cell", "rule"], function(BASIC_CELL, RULE) {
     var ROLE, chkbyNei, _Math, _baseFn;
     console.log("role_cell");
-    console.log(RULE);
     _Math = Math;
     chkbyNei = function(thisCell, current, cells, num) {
       var bedead, c_size, delta, position, this_row;
@@ -16,7 +15,7 @@
       delta = [1, -1, -c_size, -c_size + 1, -c_size - 1, c_size, c_size + 1, c_size - 1];
       bedead = 0;
       delta.map(function(delta_i, idx) {
-        var abs_delta_i, cell_nei, chk_row, ghost_i, nei_pos, row;
+        var abs_delta_i, cell_nei, chk_row, nei_pos, row;
         abs_delta_i = _Math.abs(delta_i);
         switch (true) {
           case abs_delta_i < 2:
@@ -30,15 +29,11 @@
         }
         nei_pos = position + delta_i;
         row = _Math.floor(nei_pos / c_size);
-        if ((row - this_row) === chk_row) {
+        if (!(row - this_row - chk_row)) {
           cell_nei = current[nei_pos];
-          if (!!cell_nei && cell_nei.type === "role") {
-            ghost_i = cell_nei.ghost;
-            return (typeof ghost_i === "number" && !ghost_i) && (bedead++);
-          }
+          if (!!cell_nei && cell_nei.type === "role") return bedead++;
         }
       });
-      (thisCell.type === "role") && (bedead--);
       return bedead;
     };
     _baseFn = function(thisCell, current, cells, opts) {
@@ -96,13 +91,15 @@
           cells: cells,
           stable: true
         };
-        if (is_delay && this.lifecycle < this.delay) {
-          this.lifecycle++;
-        } else {
-          this.lifecycle = 0;
-          if (!!RULE[mode]) {
-            opts.desc = RULE[mode];
-            result = _baseFn(this, current, cells, opts);
+        if (!this.visited) {
+          if (is_delay && this.lifecycle < this.delay) {
+            this.lifecycle++;
+          } else {
+            this.lifecycle = 0;
+            if (!!RULE[mode]) {
+              opts.desc = RULE[mode];
+              result = _baseFn(this, current, cells, opts);
+            }
           }
         }
         return result;

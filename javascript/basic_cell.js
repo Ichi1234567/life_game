@@ -12,7 +12,7 @@
       delta = [1, -1, -c_size, -c_size + 1, -c_size - 1, c_size, c_size + 1, c_size - 1];
       bedead = 0;
       delta.map(function(delta_i) {
-        var abs_delta_i, cell_nei, chk_row, ghost_i, nei_pos, row;
+        var abs_delta_i, cell_nei, chk_row, nei_pos, row;
         abs_delta_i = _Math.abs(delta_i);
         switch (true) {
           case abs_delta_i < 2:
@@ -26,15 +26,11 @@
         }
         nei_pos = position + delta_i;
         row = _Math.floor(nei_pos / c_size);
-        if ((row - this_row) === chk_row) {
+        if (!(row - this_row - chk_row)) {
           cell_nei = current[nei_pos];
-          if (!!cell_nei && cell_nei.type === "role") {
-            ghost_i = cell_nei.ghost;
-            return (typeof ghost_i === "number" && !ghost_i) && (bedead++);
-          }
+          if (!!cell_nei && cell_nei.type === "role") return bedead++;
         }
       });
-      (thisCell.type === "role") && (bedead--);
       return bedead;
     };
     _baseFn = function(thisCell, current, cells, opts) {
@@ -63,6 +59,7 @@
     MODEL = Backbone.Model.extend({
       initialize: function(params) {
         this.type = "empty";
+        this.visited = false;
         this.delay = 0;
         this.lifecycle = 0;
         this.position = params.position;
@@ -71,6 +68,7 @@
       },
       constructor: function(params) {
         this.type = "empty";
+        this.visited = false;
         this.delay = 0;
         this.lifecycle = 0;
         this.position = params.position;
@@ -95,7 +93,7 @@
           cells: cells,
           stable: true
         };
-        if (!!_rule[mode]) {
+        if (!this.visited && !!_rule[mode]) {
           opts.desc = RULE[mode];
           result = _baseFn(this, current, cells, opts);
         }

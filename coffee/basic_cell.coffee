@@ -31,13 +31,11 @@ define([
 
             nei_pos = position + delta_i
             row = _Math.floor(nei_pos / c_size)
-            if ((row - this_row) == chk_row)
+            if (!(row - this_row - chk_row))
                 cell_nei = current[nei_pos]
                 if (!!cell_nei && cell_nei.type == "role")
-                    ghost_i = cell_nei.ghost
-                    ((typeof ghost_i == "number" && !ghost_i) && (bedead++))
+                    bedead++
         )
-        ((thisCell.type == "role") && (bedead--))
 
         bedead
 
@@ -74,6 +72,7 @@ define([
     MODEL = Backbone.Model.extend({
         initialize: (params) ->
             @type = "empty"
+            @visited = false
             @delay = 0
             @lifecycle = 0
             @position = params.position
@@ -82,6 +81,7 @@ define([
 
         constructor: (params) ->
             @type = "empty"
+            @visited = false
             @delay = 0
             @lifecycle = 0
             @position = params.position
@@ -110,7 +110,7 @@ define([
                 cells: cells,
                 stable: true
             }
-            if (!!_rule[mode])
+            if (!@visited && !!_rule[mode])
                 opts.desc = RULE[mode]
                 result = _baseFn(@, current, cells, opts)
             result
