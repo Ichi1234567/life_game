@@ -3,11 +3,10 @@
   define(["rule"], function(RULE) {
     var MODEL, chkbyNei, _Math, _baseFn;
     _Math = Math;
-    chkbyNei = function(thisCell, current, cells, num) {
-      var bedead, c_size, chk_row, delta, position, this_row;
+    chkbyNei = function(thisCell, current, cells, c_size) {
+      var bedead, chk_row, delta, position, this_row;
       position = thisCell.position;
       thisCell.lifecycle++;
-      c_size = _Math.sqrt(num);
       this_row = _Math.floor(position / c_size);
       delta = [1, -1, -c_size, -c_size + 1, -c_size - 1, c_size, c_size + 1, c_size - 1];
       bedead = 0;
@@ -26,7 +25,7 @@
     _baseFn = function(thisCell, current, cells, opts) {
       var ROLE, bedead, chk, i, position, rule_desc, rule_nei, _origin_type, _stable;
       position = thisCell.position;
-      bedead = chkbyNei(thisCell, current, cells, opts.num);
+      bedead = chkbyNei(thisCell, current, cells, opts.c_size);
       ROLE = opts.ROLE;
       _origin_type = thisCell.type;
       _stable = true;
@@ -38,9 +37,8 @@
         bedead === rule_nei[--i] && (chk = true, i = 0);
       }
       chk && (cells[position] = new ROLE({
-        position: position,
-        visited: true
-      }), _stable = _origin_type === "role");
+        position: position
+      }), _stable = false);
       return {
         cells: cells,
         stable: _stable

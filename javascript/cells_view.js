@@ -90,9 +90,11 @@
     };
     SCENE = Backbone.View.extend({
       initialize: function(params) {
-        var _h, _saveWorker, _this, _w;
+        var _h, _num, _saveWorker, _this, _w;
         params = params ? params : {};
         this.num = params.num ? params.num : 64.;
+        _num = this.num;
+        this.size = _Math.ceil(_Math.sqrt(_num));
         this.w = params.w ? params.w : 300.;
         this.h = params.h ? params.h : 300.;
         _w = this.w;
@@ -186,21 +188,21 @@
         return this.reset();
       },
       chk_opts: function() {
-        var i, sum, _chk_delay, _fn, _len, _rule;
+        var i, sum, _chk_delay, _len, _rule;
         _chk_delay = !!$("#chk-delay").attr("checked");
         _rule = $("#mode option:selected").html().split("/");
         sum = 0;
         _len = 0;
-        _fn = function(i) {
-          _rule[i].split("").forEach(function(val) {
-            var _val;
-            _val = parseInt(val);
-            return !isNaN(_val) && (sum += _val);
-          });
-          return _len += _rule[i].length;
-        };
-        for (i = 0; i < 2; i++) {
-          _fn(i);
+        i = 2;
+        while (--i > -1) {
+          (function(i) {
+            _rule[i].split("").forEach(function(val) {
+              var _val;
+              _val = parseInt(val);
+              return !isNaN(_val) && (sum += _val);
+            });
+            return _len += _rule[i].length;
+          })(i);
         }
         this.cellSet = ROUTINES.generateSets(this.num, {
           ghost: parseInt(_rule[2]),
@@ -210,13 +212,14 @@
         return this;
       },
       reset: function(init) {
-        var _cells, _current, _h, _num, _w;
+        var _cells, _current, _h, _num, _size, _w;
         global_count = 0;
         this.cells = this.set(this.cellSet);
         _num = this.num;
         _cells = this.cells;
         _w = this.w;
         _h = this.h;
+        _size = this.size;
         _current = this.current;
         this.saveWorker.postMessage(_cells);
         $(".plant").each(function(idx, elm) {
@@ -225,7 +228,7 @@
           (init || _chk) && $(elm).html("").showD3({
             w: _w,
             h: _h,
-            num: _Math.ceil(_Math.sqrt(_num)),
+            num: _size,
             data: _cells
           }).css("visibility", "visible");
           (!_chk) && $(elm).css("visibility", "hidden");
@@ -235,7 +238,7 @@
         return this;
       },
       next: function() {
-        var cell_i, cells_update, i, mode, result, _args, _cells, _chk_delay, _current, _h, _is_auto_reset, _localTime, _num, _stable, _state, _view, _w;
+        var c_size, cell_i, cells_update, i, mode, result, _args, _cells, _chk_delay, _current, _h, _is_auto_reset, _localTime, _num, _stable, _state, _view, _w;
         _current = this.current;
         _cells = this.cells;
         _num = this.num;
@@ -246,7 +249,7 @@
         cells_update = function(total_cells, thisCell, state, mode, opts) {
           var c_size, chk_row, delta, position, result, this_row, up_cells;
           position = thisCell.position;
-          c_size = _Math.sqrt(total_cells.length);
+          c_size = opts.c_size;
           this_row = _Math.floor(position / c_size);
           delta = [1, -1, -c_size, -c_size + 1, -c_size - 1, c_size, c_size + 1, c_size - 1];
           chk_row = [0, -1, 1];
@@ -274,14 +277,17 @@
           result.cells = total_cells;
           return result;
         };
+        c_size = this.size;
         _args = {
           EMPTY: BASIC,
           ROLE: ROLE,
           FOOD: FOOD,
           ENEMY: ENEMY,
-          delay: _chk_delay
+          delay: _chk_delay,
+          c_size: c_size
         };
-        for (i = 0; 0 <= _num ? i < _num : i > _num; 0 <= _num ? i++ : i--) {
+        i = -1;
+        while (++i < _num) {
           cell_i = _cells[i];
           if (!cell_i.visited && cell_i.type !== "empty") {
             result = cells_update(_cells, cell_i, _state, mode, _args);
@@ -325,7 +331,8 @@
         if (_rnd_ghost && _rule[2].length && _rule[2] !== " ") {
           _dying_const = parseInt(_rule[2]);
         }
-        for (i = 0; 0 <= _num ? i < _num : i > _num; 0 <= _num ? i++ : i--) {
+        i = -1;
+        while (++i < _num) {
           _rnd = _Math.random();
           cell_i = null;
           cellset.map(function(set_i, idx) {

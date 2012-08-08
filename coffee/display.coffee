@@ -92,23 +92,22 @@ require([
 
         dw = width / num
         dh = height / num
-        for data_i, i in data
-            ((data_i, i) ->
-                type = data_i.type
-                className = type
-                (className == "ghost" && (
-                    className += (data_i.ghost).toString()
-                ))
-                px = dx(i % num)
-                py = dy2(_Math.floor(i / num))
-                $svg.append("svg:rect")
-                    .attr("id", ("grid_" + i))
-                    .attr("class", className)
-                    .attr("x", px)
-                    .attr("y", py)
-                    .attr("width", dw)
-                    .attr("height", dh)
-            )(data_i, i)
+        data.map(((data_i, i) ->
+            type = data_i.type
+            className = type
+            (className == "ghost" && (
+                className += (data_i.ghost).toString()
+            ))
+            px = dx(i % num)
+            py = dy2(_Math.floor(i / num))
+            $svg.append("svg:rect")
+                .attr("id", ("grid_" + i))
+                .attr("class", className)
+                .attr("x", px)
+                .attr("y", py)
+                .attr("width", dw)
+                .attr("height", dh)
+        ))
         @
 
 
