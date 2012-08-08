@@ -235,7 +235,7 @@
         return this;
       },
       next: function() {
-        var cells, i, mode, result, _cells, _chk_delay, _current, _h, _is_auto_reset, _localTime, _num, _stable, _state, _view, _w;
+        var cell_i, cells_update, i, mode, result, _args, _cells, _chk_delay, _current, _h, _is_auto_reset, _localTime, _num, _stable, _state, _view, _w;
         _current = this.current;
         _cells = this.cells;
         _num = this.num;
@@ -243,23 +243,56 @@
         _stable = true;
         mode = $("#mode option:selected").val();
         _chk_delay = !!$("#chk-delay").attr("checked");
+        cells_update = function(total_cells, thisCell, state, mode, opts) {
+          var c_size, chk_row, delta, position, result, this_row, up_cells;
+          position = thisCell.position;
+          c_size = _Math.sqrt(total_cells.length);
+          this_row = _Math.floor(position / c_size);
+          delta = [1, -1, -c_size, -c_size + 1, -c_size - 1, c_size, c_size + 1, c_size - 1];
+          chk_row = [0, -1, 1];
+          result = {
+            stable: true
+          };
+          up_cells = [thisCell];
+          delta.forEach(function(delta_i, idx) {
+            var cell_nei, nei_pos, row;
+            nei_pos = position + delta_i;
+            row = _Math.floor(nei_pos / c_size);
+            if (!(row - this_row - chk_row[_Math.floor((idx + 1) / 3)])) {
+              cell_nei = total_cells[nei_pos];
+              return cell_nei && !cell_nei.visited && up_cells.push(cell_nei);
+            }
+          });
+          up_cells.forEach(function(cell) {
+            var tmp;
+            position = cell.position;
+            tmp = cell.move(state, total_cells, mode, opts);
+            total_cells = tmp.cells;
+            !tmp.stable && (result.stable = false);
+            return total_cells[position].visited = true;
+          });
+          result.cells = total_cells;
+          return result;
+        };
+        _args = {
+          EMPTY: BASIC,
+          ROLE: ROLE,
+          FOOD: FOOD,
+          ENEMY: ENEMY,
+          delay: _chk_delay
+        };
         for (i = 0; 0 <= _num ? i < _num : i > _num; 0 <= _num ? i++ : i--) {
-          result = (function(i, cells) {
-            return cells[i].move(_state, cells, mode, {
-              EMPTY: BASIC,
-              ROLE: ROLE,
-              FOOD: FOOD,
-              ENEMY: ENEMY,
-              delay: _chk_delay
-            });
-          })(i, _cells);
-          !result.stable && (_stable = false);
-          cells = result.cells;
+          cell_i = _cells[i];
+          if (!cell_i.visited && cell_i.type !== "empty") {
+            result = cells_update(_cells, cell_i, _state, mode, _args);
+            !result.stable && (_stable = false);
+            _cells = result.cells;
+          }
         }
         this.cells = _cells;
         _w = this.w;
         _h = this.h;
-        this.saveWorker.postMessage(this.cells);
+        this.saveWorker.postMessage(_cells);
         _state = this.state;
         if (!_stable) {
           $(".plant").each(function(idx, elm) {
