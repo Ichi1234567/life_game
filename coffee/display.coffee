@@ -115,7 +115,7 @@ require([
     $.fn.updateD3 = (cells) ->
         elm = d3.select(this[0])
         cells.map((thisCell) ->
-            thisCell.visied = false
+            thisCell.visited = false
             _id = "#grid_" + thisCell.position
             _className = thisCell.type
             (_className == "ghost" && (

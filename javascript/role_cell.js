@@ -7,29 +7,19 @@
     console.log("role_cell");
     _Math = Math;
     chkbyNei = function(thisCell, current, cells, num) {
-      var bedead, c_size, delta, position, this_row;
+      var bedead, c_size, chk_row, delta, position, this_row;
       position = thisCell.position;
       thisCell.lifecycle++;
       c_size = _Math.sqrt(num);
       this_row = _Math.floor(position / c_size);
       delta = [1, -1, -c_size, -c_size + 1, -c_size - 1, c_size, c_size + 1, c_size - 1];
       bedead = 0;
+      chk_row = [0, -1, 1];
       delta.map(function(delta_i, idx) {
-        var abs_delta_i, cell_nei, chk_row, nei_pos, row;
-        abs_delta_i = _Math.abs(delta_i);
-        switch (true) {
-          case abs_delta_i < 2:
-            chk_row = 0;
-            break;
-          case delta_i > 0:
-            chk_row = 1;
-            break;
-          case delta_i < 0:
-            chk_row = -1;
-        }
+        var cell_nei, nei_pos, row;
         nei_pos = position + delta_i;
         row = _Math.floor(nei_pos / c_size);
-        if (!(row - this_row - chk_row)) {
+        if (!(row - this_row - chk_row[_Math.floor((idx + 1) / 3)])) {
           cell_nei = current[nei_pos];
           if (!!cell_nei && cell_nei.type === "role") return bedead++;
         }
@@ -50,10 +40,11 @@
       while (i) {
         bedead === rule_nei[--i] && (chk = true, i = 0);
       }
-      !chk && rule_desc[2] > 0 && (cells[position].type = "ghost");
+      !chk && rule_desc[2] > 0 && (cells[position].type = "ghost", cells[position].visited = true);
       (cells[position].type === "ghost") && (cells[position].ghost++, _stable = false);
       ((!chk && rule_desc[2] < 0) || (rule_desc[2] > 0 && cells[position].ghost >= rule_desc[2])) && (cells[position] = new EMPTY({
-        position: position
+        position: position,
+        visited: true
       }), _stable = _origin_type === "empty");
       return {
         cells: cells,
@@ -81,25 +72,23 @@
       }
 
       ROLE.prototype.move = function(current, cells, mode, opts) {
-        var is_delay, result;
+        var is_delay, result, _rule;
         opts = opts ? opts : {};
         opts.num = cells.length;
-        opts.rule = RULE;
+        _rule = RULE;
         is_delay = opts.delay ? true : false;
         delete opts.delay;
         result = {
           cells: cells,
           stable: true
         };
-        if (!this.visited) {
-          if (is_delay && this.lifecycle < this.delay) {
-            this.lifecycle++;
-          } else {
-            this.lifecycle = 0;
-            if (!!RULE[mode]) {
-              opts.desc = RULE[mode];
-              result = _baseFn(this, current, cells, opts);
-            }
+        if (is_delay && this.lifecycle < this.delay) {
+          this.lifecycle++;
+        } else {
+          this.lifecycle = 0;
+          if (!!_rule[mode]) {
+            opts.desc = _rule[mode];
+            result = _baseFn(this, current, cells, opts);
           }
         }
         return result;
