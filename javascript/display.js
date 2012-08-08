@@ -15,7 +15,7 @@
     height = 400 - margin.top - margin.bottom;
     _Math = Math;
     $.fn.showD3 = function(parmas) {
-      var $svg, data, data_i, dh, domainX, domainY, dw, dx, dy, dy2, i, line, num, _fn, _len;
+      var $svg, data, dh, domainX, domainY, dw, dx, dy, dy2, line, num;
       if (!parmas) return;
       data = parmas.data;
       num = parmas.num;
@@ -42,7 +42,7 @@
       $svg.append("svg:rect").attr("class", "box").attr("width", width).attr("height", height);
       dw = width / num;
       dh = height / num;
-      _fn = function(data_i, i) {
+      data.map((function(data_i, i) {
         var className, px, py, type;
         type = data_i.type;
         className = type;
@@ -50,11 +50,7 @@
         px = dx(i % num);
         py = dy2(_Math.floor(i / num));
         return $svg.append("svg:rect").attr("id", "grid_" + i).attr("class", className).attr("x", px).attr("y", py).attr("width", dw).attr("height", dh);
-      };
-      for (i = 0, _len = data.length; i < _len; i++) {
-        data_i = data[i];
-        _fn(data_i, i);
-      }
+      }));
       return this;
     };
     return $.fn.updateD3 = function(cells) {

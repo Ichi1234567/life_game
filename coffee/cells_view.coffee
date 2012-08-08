@@ -112,6 +112,8 @@ define([
         initialize: (params) ->
             params = if (params) then (params) else ({})
             @num = if (params.num) then (params.num) else (64)
+            _num = @num
+            @size = _Math.ceil(_Math.sqrt(_num))
             @w = if (params.w) then (params.w) else (300)
             @h = if (params.h) then (params.h) else (300)
             _w = @w
@@ -198,7 +200,8 @@ define([
             _rule = $("#mode option:selected").html().split("/")
             sum = 0
             _len = 0
-            for i in [0...2]
+            i = 2
+            while (--i > -1)
                 ((i) ->
                     _rule[i].split("").forEach((val) ->
                         _val = parseInt(val)
@@ -221,6 +224,7 @@ define([
             _cells = @cells
             _w = @w
             _h = @h
+            _size = @size
             _current = @current
             @saveWorker.postMessage(_cells)
             $(".plant").each((idx, elm) ->
@@ -228,7 +232,7 @@ define([
                 ((init || _chk) && $(elm).html("").showD3({
                     w: _w,
                     h: _h,
-                    num: _Math.ceil(_Math.sqrt(_num)),
+                    num: _size
                     data: _cells
                 }).css("visibility", "visible"))
                 ((!_chk) && $(elm).css("visibility", "hidden"))
@@ -249,7 +253,7 @@ define([
 
             cells_update = (total_cells, thisCell, state, mode, opts) ->
                 position = thisCell.position
-                c_size = _Math.sqrt(total_cells.length)
+                c_size = opts.c_size
                 this_row = _Math.floor(position / c_size)
                 delta = [
                     1,
@@ -282,15 +286,18 @@ define([
                 )
                 result.cells = total_cells
                 result
+            c_size = @size
             _args = {
                 EMPTY: BASIC,
                 ROLE: ROLE,
                 FOOD: FOOD,
                 ENEMY: ENEMY,
-                delay: _chk_delay
+                delay: _chk_delay,
+                c_size: c_size
             }
 
-            for i in [0..._num]
+            i = -1
+            while (++i < _num)
                 cell_i = _cells[i]
                 if (!cell_i.visited && cell_i.type != "empty")
                     result = cells_update(_cells, cell_i, _state, mode, _args)
@@ -338,7 +345,8 @@ define([
             _dying_const = 0
             if (_rnd_ghost && _rule[2].length and _rule[2] != " ")
                 _dying_const = parseInt(_rule[2])
-            for i in [0..._num]
+            i = -1
+            while (++i < _num)
                 _rnd = _Math.random()
                 cell_i = null
                 cellset.map((set_i, idx) ->

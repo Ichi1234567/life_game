@@ -5,10 +5,9 @@ define([
     console.log("role_cell")
     #console.log(RULE)
     _Math = Math
-    chkbyNei = (thisCell, current, cells, num) ->
+    chkbyNei = (thisCell, current, cells, c_size) ->
         position = thisCell.position
         thisCell.lifecycle++
-        c_size = _Math.sqrt(num)
         this_row = _Math.floor(position / c_size)
         delta = [
             1,
@@ -25,7 +24,6 @@ define([
         delta.map((delta_i, idx)->
             nei_pos = position + delta_i
             row = _Math.floor(nei_pos / c_size)
-            #console.log(chk_row[_Math.floor(idx / 3)])
             if (!(row - this_row - chk_row[_Math.floor((idx + 1) / 3)]))
                 cell_nei = current[nei_pos]
                 if (!!cell_nei && cell_nei.type == "role")
@@ -36,7 +34,7 @@ define([
 
     _baseFn = (thisCell, current, cells, opts) ->
         position = thisCell.position
-        bedead = chkbyNei(thisCell, current, cells, opts.num)
+        bedead = chkbyNei(thisCell, current, cells, opts.c_size)
         EMPTY = opts.EMPTY
         _origin_type = thisCell.type
         _stable = true
@@ -53,7 +51,6 @@ define([
                 ))
             (!chk && rule_desc[2] > 0 && (
                 cells[position].type = "ghost"
-                cells[position].visited = true
             ))
 
         ((thisCell.type == "ghost") && (
@@ -64,10 +61,10 @@ define([
         (((!chk && rule_desc[2] < 0) ||
         (rule_desc[2] > 0 && cells[position].ghost >= rule_desc[2])) && (
             cells[position] = new EMPTY({
-                position: position,
-                visited: true
+                position: position
             })
-            _stable = (_origin_type == "empty")
+            #_stable = (_origin_type == "empty")
+            _stable = false
         ))
         
         {
