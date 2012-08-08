@@ -45,17 +45,18 @@ define([
         rule_nei = rule_desc[0]
         i = rule_nei.length
         chk = false
-        while(i)
-            (bedead == rule_nei[--i] && (
-                chk = true
-                i = 0
+        if (thisCell.type != "ghost")
+            while(i)
+                (bedead == rule_nei[--i] && (
+                    chk = true
+                    i = 0
+                ))
+            (!chk && rule_desc[2] > 0 && (
+                cells[position].type = "ghost"
+                cells[position].visited = true
             ))
-        (!chk && rule_desc[2] > 0 && (
-            cells[position].type = "ghost"
-            cells[position].visited = true
-        ))
 
-        ((cells[position].type == "ghost") && (
+        ((thisCell.type == "ghost") && (
             cells[position].ghost++
             _stable = false
         ))
