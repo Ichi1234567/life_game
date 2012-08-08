@@ -243,27 +243,63 @@ define([
             _cells = @cells
             _num = @num
             _state = @state
-            #_cells = _cells[0].move(_cells, "twotwo")
             _stable = true
             mode = $("#mode option:selected").val()
             _chk_delay = !!$("#chk-delay").attr("checked")
+
+            cells_update = (total_cells, thisCell, state, mode, opts) ->
+                position = thisCell.position
+                c_size = _Math.sqrt(total_cells.length)
+                this_row = _Math.floor(position / c_size)
+                delta = [
+                    1,
+                    -1,
+                    -c_size,
+                    (-c_size + 1),
+                    (-c_size - 1),
+                    c_size,
+                    (c_size + 1),
+                    (c_size - 1)
+                ]
+                chk_row = [0, -1, 1]
+                result = { stable: true }
+                up_cells = [thisCell]
+                delta.forEach((delta_i, idx)->
+                    nei_pos = position + delta_i
+                    row = _Math.floor(nei_pos / c_size)
+                    if (!(row - this_row - chk_row[_Math.floor((idx + 1) / 3)]))
+                        cell_nei = total_cells[nei_pos]
+                        (cell_nei && !cell_nei.visited && up_cells.push(cell_nei))
+                )
+                #console.log(up_cells)
+
+                up_cells.forEach((cell) ->
+                    position = cell.position
+                    tmp = cell.move(state, total_cells, mode, opts)
+                    total_cells = tmp.cells
+                    (!tmp.stable && (result.stable = false))
+                    total_cells[position].visited = true
+                )
+                result.cells = total_cells
+                result
+            _args = {
+                EMPTY: BASIC,
+                ROLE: ROLE,
+                FOOD: FOOD,
+                ENEMY: ENEMY,
+                delay: _chk_delay
+            }
+
             for i in [0..._num]
-                result = ((i, cells)->
-                    #cells[i].move(cells, "twotwo")
-                    cells[i].move(_state, cells, mode, {
-                        EMPTY: BASIC,
-                        ROLE: ROLE,
-                        FOOD: FOOD,
-                        ENEMY: ENEMY,
-                        delay: _chk_delay
-                    })
-                )(i, _cells)
-                (!result.stable && (_stable = false))
-                cells = result.cells
+                cell_i = _cells[i]
+                if (!cell_i.visited && cell_i.type != "empty")
+                    result = cells_update(_cells, cell_i, _state, mode, _args)
+                    (!result.stable && (_stable = false))
+                    _cells = result.cells
             @cells = _cells
             _w = @w
             _h = @h
-            @saveWorker.postMessage(@cells)
+            @saveWorker.postMessage(_cells)
             _state = @state
             if (!_stable)
                 $(".plant").each((idx, elm) ->
@@ -279,6 +315,7 @@ define([
             else
                 global_count = 0
                 prev_status = null
+
             ((global_count == 10) && (
                 global_count = 0
                 prev_status = null

@@ -3,7 +3,7 @@ define([
     "rule"
 ], (BASIC_CELL, RULE) ->
     console.log("role_cell")
-    console.log(RULE)
+    #console.log(RULE)
     _Math = Math
     chkbyNei = (thisCell, current, cells, num) ->
         position = thisCell.position
@@ -21,25 +21,16 @@ define([
             (c_size - 1)
         ]
         bedead = 0
+        chk_row = [0, -1, 1]
         delta.map((delta_i, idx)->
-            abs_delta_i = _Math.abs(delta_i)
-            switch true
-                when (abs_delta_i < 2)
-                    chk_row = 0
-                when (delta_i > 0)
-                    chk_row = 1
-                when (delta_i < 0)
-                    chk_row = -1
-
             nei_pos = position + delta_i
             row = _Math.floor(nei_pos / c_size)
-            if ((row - this_row) == chk_row)
+            #console.log(chk_row[_Math.floor(idx / 3)])
+            if (!(row - this_row - chk_row[_Math.floor((idx + 1) / 3)]))
                 cell_nei = current[nei_pos]
                 if (!!cell_nei && cell_nei.type == "role")
-                    ghost_i = cell_nei.ghost
-                    ((typeof ghost_i == "number" && !ghost_i) && (bedead++))
+                    bedead++
         )
-        ((thisCell.type == "role") && (bedead--))
 
         bedead
 
@@ -61,6 +52,7 @@ define([
             ))
         (!chk && rule_desc[2] > 0 && (
             cells[position].type = "ghost"
+            cells[position].visited = true
         ))
 
         ((cells[position].type == "ghost") && (
@@ -70,7 +62,10 @@ define([
 
         (((!chk && rule_desc[2] < 0) ||
         (rule_desc[2] > 0 && cells[position].ghost >= rule_desc[2])) && (
-            cells[position] = new EMPTY({ position: position })
+            cells[position] = new EMPTY({
+                position: position,
+                visited: true
+            })
             _stable = (_origin_type == "empty")
         ))
         
@@ -103,7 +98,7 @@ define([
         move: (current, cells, mode, opts) ->
             opts = if (opts) then (opts) else ({})
             opts.num = cells.length
-            opts.rule = RULE
+            _rule = RULE
             is_delay = if (opts.delay) then (true) else (false)
             delete opts.delay
             result = {
@@ -115,11 +110,9 @@ define([
                 @lifecycle++
             else
                 @lifecycle = 0
-                #result = super(current, cells, mode, opts)
-                if (!!RULE[mode])
-                    opts.desc = RULE[mode]
+                if (!!_rule[mode])
+                    opts.desc = _rule[mode]
                     result = _baseFn(@, current, cells, opts)
-
             result
 
     ROLE

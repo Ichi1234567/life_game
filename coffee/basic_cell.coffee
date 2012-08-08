@@ -19,25 +19,15 @@ define([
             (c_size - 1)
         ]
         bedead = 0
-        delta.map((delta_i)->
-            abs_delta_i = _Math.abs(delta_i)
-            switch true
-                when (abs_delta_i < 2)
-                    chk_row = 0
-                when (delta_i > 0)
-                    chk_row = 1
-                when (delta_i < 0)
-                    chk_row = -1
-
+        chk_row = [0, -1, 1]
+        delta.map((delta_i, idx)->
             nei_pos = position + delta_i
             row = _Math.floor(nei_pos / c_size)
-            if ((row - this_row) == chk_row)
+            if (!(row - this_row - chk_row[_Math.floor((idx + 1) / 3)]))
                 cell_nei = current[nei_pos]
                 if (!!cell_nei && cell_nei.type == "role")
-                    ghost_i = cell_nei.ghost
-                    ((typeof ghost_i == "number" && !ghost_i) && (bedead++))
+                    bedead++
         )
-        ((thisCell.type == "role") && (bedead--))
 
         bedead
 
@@ -60,7 +50,10 @@ define([
             ))
 
         ((chk) && (
-            cells[position] = new ROLE({ position: position })
+            cells[position] = new ROLE({
+                position: position,
+                visited: true
+            })
             _stable = (_origin_type == "role")
         ))
 
@@ -74,6 +67,7 @@ define([
     MODEL = Backbone.Model.extend({
         initialize: (params) ->
             @type = "empty"
+            @visited = if (params.visited) then (true) else (false)
             @delay = 0
             @lifecycle = 0
             @position = params.position
@@ -82,6 +76,7 @@ define([
 
         constructor: (params) ->
             @type = "empty"
+            @visited = if (params.visited) then (true) else (false)
             @delay = 0
             @lifecycle = 0
             @position = params.position
@@ -101,15 +96,11 @@ define([
             opts = if (opts) then (opts) else ({})
             opts.num = cells.length
             _rule = RULE
-            (opts.rule && (
-                _rule = opts.rule
-                delete opts.rule
-            ))
-
             result = {
                 cells: cells,
                 stable: true
             }
+
             if (!!_rule[mode])
                 opts.desc = RULE[mode]
                 result = _baseFn(@, current, cells, opts)
