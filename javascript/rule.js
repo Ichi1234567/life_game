@@ -50,17 +50,14 @@
         for (j = 0; j < 3; j++) {
           rule_ij = rule_i[j];
           if (!rule_ij.length) {
-            tmp.push(-1);
+            tmp.push(false);
             continue;
           }
           switch (j) {
             case 0.:
             case 1.:
               tmp.push((function(rule_ij) {
-                rule_ij = rule_ij.split("");
-                return rule_ij.map(function(val) {
-                  return _parseInt(val);
-                });
+                return rule_ij = new RegExp("[" + rule_ij + "]+");
               })(rule_ij));
               break;
             case 2.:
