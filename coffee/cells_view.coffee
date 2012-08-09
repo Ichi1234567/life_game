@@ -54,10 +54,7 @@ define([
             # 先算base
             _base *= _Math.cos(_avgSB / 9)
             # 用ghost調整
-            switch ghost_num
-                when (0) then
-                else
-                    _base *= (1 + ghost_num / 40)
+            _base *= (1 + ghost_num / 40)
             #console.log("ori-base：" + _base)
             #console.log("_avg：" + _avgSB)
             #console.log("base：" + _base)

@@ -17,25 +17,21 @@
         row = _Math.floor(nei_pos / c_size);
         if (!(row - this_row - chk_row[_Math.floor((idx + 1) / 3)])) {
           cell_nei = current[nei_pos];
-          if (!!cell_nei && cell_nei.type === "role") return bedead++;
+          return !!cell_nei && cell_nei.type === "role" && (bedead++);
         }
       });
       return bedead;
     };
     _baseFn = function(thisCell, current, cells, opts) {
-      var ROLE, bedead, chk, i, position, rule_desc, rule_nei, _origin_type, _stable;
+      var ROLE, bedead, chk, cond, position, rule_desc, _origin_type, _stable;
       position = thisCell.position;
       bedead = chkbyNei(thisCell, current, cells, opts.c_size);
       ROLE = opts.ROLE;
       _origin_type = thisCell.type;
       _stable = true;
       rule_desc = opts.desc;
-      rule_nei = rule_desc[1];
-      i = rule_nei.length;
-      chk = false;
-      while (i) {
-        bedead === rule_nei[--i] && (chk = true, i = 0);
-      }
+      cond = rule_desc[1];
+      chk = cond ? cond.test(bedead) : false;
       chk && (cells[position] = new ROLE({
         position: position
       }), _stable = false);
@@ -82,10 +78,7 @@
           cells: cells,
           stable: true
         };
-        if (!!_rule[mode]) {
-          opts.desc = RULE[mode];
-          result = _baseFn(this, current, cells, opts);
-        }
+        !!_rule[mode] && (opts.desc = RULE[mode], result = _baseFn(this, current, cells, opts));
         return result;
       }
     });

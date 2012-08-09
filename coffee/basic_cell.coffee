@@ -24,8 +24,9 @@ define([
             row = _Math.floor(nei_pos / c_size)
             if (!(row - this_row - chk_row[_Math.floor((idx + 1) / 3)]))
                 cell_nei = current[nei_pos]
-                if (!!cell_nei && cell_nei.type == "role")
+                (!!cell_nei && cell_nei.type == "role" && (
                     bedead++
+                ))
         )
 
         bedead
@@ -38,14 +39,8 @@ define([
         _stable = true
 
         rule_desc = opts.desc
-        rule_nei = rule_desc[1]
-        i = rule_nei.length
-        chk = false
-        while(i)
-            (bedead == rule_nei[--i] && (
-                chk = true
-                i = 0
-            ))
+        cond = rule_desc[1]
+        chk = if (cond) then (cond.test(bedead)) else (false)
 
         ((chk) && (
             cells[position] = new ROLE({
@@ -99,9 +94,10 @@ define([
                 stable: true
             }
 
-            if (!!_rule[mode])
+            (!!_rule[mode] && (
                 opts.desc = RULE[mode]
                 result = _baseFn(@, current, cells, opts)
+            ))
             result
     })
 
