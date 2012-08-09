@@ -42,6 +42,7 @@ define([
 
         rule_desc = opts.desc
         cond = rule_desc[0]
+        #console.log(cond)
         if (thisCell.type != "ghost")
             chk = if (cond) then (cond.test(bedead)) else (false)
             (!chk && rule_desc[2] > 0 && (

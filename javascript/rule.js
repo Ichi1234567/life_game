@@ -57,7 +57,7 @@
             case 0.:
             case 1.:
               tmp.push((function(rule_ij) {
-                return rule_ij = new RegExp("[" + rule_ij + "]+");
+                return rule_ij = new RegExp("^[" + rule_ij + "]$");
               })(rule_ij));
               break;
             case 2.:

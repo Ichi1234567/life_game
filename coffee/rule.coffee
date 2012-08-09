@@ -54,7 +54,7 @@ define([], () ->
                 switch j
                     when (0), (1)
                         tmp.push(((rule_ij) ->
-                            rule_ij = new RegExp("[" + rule_ij + "]+")
+                            rule_ij = new RegExp("^[" + rule_ij + "]$")
                         )(rule_ij))
                     when (2)
                         tmp.push(_parseInt(rule_ij))
