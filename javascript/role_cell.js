@@ -20,30 +20,26 @@
         row = _Math.floor(nei_pos / c_size);
         if (!(row - this_row - chk_row[_Math.floor((idx + 1) / 3)])) {
           cell_nei = current[nei_pos];
-          if (!!cell_nei && cell_nei.type === "role") return bedead++;
+          return !!cell_nei && cell_nei.type === "role" && (bedead++);
         }
       });
       return bedead;
     };
     _baseFn = function(thisCell, current, cells, opts) {
-      var EMPTY, bedead, chk, i, position, rule_desc, rule_nei, _origin_type, _stable;
+      var EMPTY, bedead, chk, cond, position, rule_desc, _origin_type, _stable;
       position = thisCell.position;
       bedead = chkbyNei(thisCell, current, cells, opts.c_size);
       EMPTY = opts.EMPTY;
       _origin_type = thisCell.type;
       _stable = true;
       rule_desc = opts.desc;
-      rule_nei = rule_desc[0];
-      i = rule_nei.length;
-      chk = false;
+      cond = rule_desc[0];
       if (thisCell.type !== "ghost") {
-        while (i) {
-          bedead === rule_nei[--i] && (chk = true, i = 0);
-        }
+        chk = cond ? cond.test(bedead) : false;
         !chk && rule_desc[2] > 0 && (cells[position].type = "ghost");
       }
       (thisCell.type === "ghost") && (cells[position].ghost++, _stable = false);
-      ((!chk && rule_desc[2] < 0) || (rule_desc[2] > 0 && cells[position].ghost >= rule_desc[2])) && (cells[position] = new EMPTY({
+      ((!chk && !rule_desc[2]) || (rule_desc[2] > 0 && cells[position].ghost >= rule_desc[2])) && (cells[position] = new EMPTY({
         position: position
       }), _stable = false);
       return {
@@ -86,10 +82,7 @@
           this.lifecycle++;
         } else {
           this.lifecycle = 0;
-          if (!!_rule[mode]) {
-            opts.desc = _rule[mode];
-            result = _baseFn(this, current, cells, opts);
-          }
+          !!_rule[mode] && (opts.desc = _rule[mode], result = _baseFn(this, current, cells, opts));
         }
         return result;
       };

@@ -33,12 +33,7 @@
         _type = opts.type ? opts.type : "role";
         _avgSB = opts.avgSB ? opts.avgSB : 0.;
         _base *= _Math.cos(_avgSB / 9);
-        switch (ghost_num) {
-          case 0.:
-            break;
-          default:
-            _base *= 1 + ghost_num / 40;
-        }
+        _base *= 1 + ghost_num / 40;
         return _Math.round(num * _base);
       },
       sortSets: function(sets, opts) {

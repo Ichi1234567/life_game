@@ -49,15 +49,12 @@ define([], () ->
             for j in [0...3]
                 rule_ij = rule_i[j]
                 if !rule_ij.length
-                    tmp.push(-1)
+                    tmp.push(false)
                     continue
                 switch j
                     when (0), (1)
                         tmp.push(((rule_ij) ->
-                            rule_ij = rule_ij.split("")
-                            rule_ij.map((val) ->
-                                _parseInt(val)
-                            )
+                            rule_ij = new RegExp("^[" + rule_ij + "]$")
                         )(rule_ij))
                     when (2)
                         tmp.push(_parseInt(rule_ij))
